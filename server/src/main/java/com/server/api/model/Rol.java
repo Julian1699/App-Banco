@@ -26,7 +26,7 @@ public class Rol {
     @Column(nullable = false)
     private Boolean habilitado = true;
 
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdAt;
 
     @Column(name = "updated_at")
