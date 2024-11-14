@@ -2,6 +2,7 @@ package com.server.api.model;
 
 import lombok.*;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
@@ -25,9 +26,11 @@ public class Usuario {
     private String numeroIdentificacion;
 
     @Column(nullable = false, length = 100)
+    @NotBlank(message = "El nombre no puede estar vacío")
     private String nombres;
 
-    @Column(length = 100)
+    @NotBlank(message = "El campo correo no puede estar vacío")
+    @Column(unique = true, length = 100) // Asegura que no haya correos duplicados
     private String correo;
 
     @Column(nullable = false, length = 200)
