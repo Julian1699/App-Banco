@@ -30,7 +30,7 @@ public class SecurityConfig {
             .authorizeHttpRequests()
             .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
             .requestMatchers("/api/v1/auth/**").permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/v1/usuarios").permitAll()
             .anyRequest().authenticated()  // Cualquier solicitud debe estar autenticada, pero no dependemos de roles
             .and()
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

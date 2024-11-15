@@ -6,6 +6,7 @@ import com.server.api.service.UsuarioService;
 import com.server.api.exception.ResourceNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<Usuario> getAllUsuarios() {
@@ -30,6 +34,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Usuario saveUsuario(Usuario usuario) {
+       
+        // Encriptar la contraseña antes de guardar
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        
+        // Establecer el valor de `created_at`
+        if (usuario.getCreatedAt() == null) {
+            usuario.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        }
+
         return usuarioRepository.save(usuario);
     }
 
@@ -41,7 +54,12 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setNumeroIdentificacion(usuarioDetails.getNumeroIdentificacion());
         usuario.setNombres(usuarioDetails.getNombres());
         usuario.setCorreo(usuarioDetails.getCorreo());
-        usuario.setPassword(usuarioDetails.getPassword());
+
+        // Verificar si la contraseña ha cambiado antes de encriptarla
+        if (!usuario.getPassword().equals(usuarioDetails.getPassword())) {
+            usuario.setPassword(passwordEncoder.encode(usuarioDetails.getPassword()));
+        }
+
         usuario.setTelefono(usuarioDetails.getTelefono());
         usuario.setDireccion(usuarioDetails.getDireccion());
         usuario.setCiudadResidencia(usuarioDetails.getCiudadResidencia());

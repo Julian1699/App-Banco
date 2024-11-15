@@ -25,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return User.builder()
                 .username(usuario.getCorreo())  // Este método aún se llama "username" por ser parte de la clase User.
                 .password(usuario.getPassword())
-                .authorities("")  // No asignar ninguna autoridad, ya que estamos eliminando roles
+                .authorities("ROLE_USER")  // No asignar ninguna autoridad, ya que estamos eliminando roles
                 .build();
     }
 }
