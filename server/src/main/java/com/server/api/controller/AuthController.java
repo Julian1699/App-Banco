@@ -45,7 +45,7 @@ public class AuthController {
     private UsuarioRepository userRepository;
 
     @Operation(
-            summary = "Iniciar sesión con tu rol predeterminado",
+            summary = "Iniciar sesión en el sistema",
             description = "Con las credenciales correctas, devuelve un token Bearer para usar en cada solicitud HTTP.",
             tags = {"Login"})
     @ApiResponses({

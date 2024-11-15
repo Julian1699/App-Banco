@@ -12,8 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "usuarios", uniqueConstraints = @UniqueConstraint(columnNames = {"identificacion_id", "numero_identificacion"}))
-public class Usuario {
+@Table(name = "usuarios", uniqueConstraints = @UniqueConstraint(columnNames = {"numero_identificacion", "correo"}))
+public class Usuario { 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,7 +30,7 @@ public class Usuario {
     private String nombres;
 
     @NotBlank(message = "El campo correo no puede estar vacío")
-    @Column(unique = true, length = 100) // Asegura que no haya correos duplicados
+    @Column(nullable = false, length = 100)
     private String correo;
 
     @Column(nullable = false, length = 200)
