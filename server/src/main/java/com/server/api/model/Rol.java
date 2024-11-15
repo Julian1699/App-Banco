@@ -42,7 +42,6 @@ public class Rol {
     @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "rol_id"), inverseJoinColumns = @JoinColumn(name = "usuario_id"))
     private List<Usuario> usuarios;
 
-    @ManyToMany
-    @JoinTable(name = "rol_permiso", joinColumns = @JoinColumn(name = "rol_id"), inverseJoinColumns = @JoinColumn(name = "permiso_id"))
-    private List<Permiso> permisos;
+    @OneToMany(mappedBy = "rol", cascade = CascadeType.ALL)
+    private List<RolPermiso> rolPermisos;
 }

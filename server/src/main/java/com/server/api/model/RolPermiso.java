@@ -2,26 +2,26 @@ package com.server.api.model;
 
 import lombok.*;
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "permisos")
-public class Permiso {
+@Table(name = "roles_permisos")
+public class RolPermiso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 50)
-    private String nombre;
+    @ManyToOne
+    @JoinColumn(name = "rol_id", referencedColumnName = "id", nullable = false) // Foreign Key hacia la tabla roles
+    private Rol rol;
 
-    @Column
-    private String descripcion;
+    @ManyToOne
+    @JoinColumn(name = "permiso_id", referencedColumnName = "id", nullable = false) // Foreign Key hacia la tabla permisos
+    private Permiso permiso;
 
     @Column(nullable = false)
     private Boolean habilitado = true;
@@ -31,13 +31,4 @@ public class Permiso {
 
     @Column(name = "updated_at")
     private Timestamp updatedAt;
-
-    @Column(name = "created_by", length = 50)
-    private String createdBy;
-
-    @Column(name = "updated_by", length = 50)
-    private String updatedBy;
-
-    @OneToMany(mappedBy = "permiso", cascade = CascadeType.ALL)
-    private List<RolPermiso> rolPermisos;
 }
