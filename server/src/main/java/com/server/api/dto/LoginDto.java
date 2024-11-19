@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 @Data
-public class LoginDto {
+public class LoginDTO {
 
     @Email(message = "Debe proporcionar un correo electrónico válido")
     @NotBlank(message = "El campo correo no puede estar vacío")

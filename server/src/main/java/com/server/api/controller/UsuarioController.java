@@ -2,6 +2,7 @@ package com.server.api.controller;
 
 import com.server.api.model.Usuario;
 import com.server.api.service.UsuarioService;
+import com.server.api.dto.UsuarioDTO;
 import com.server.api.exception.ResourceNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,8 @@ public class UsuarioController {
             @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida correctamente")
     })
     @GetMapping
-    public ResponseEntity<List<Usuario>> getAllUsuarios() {
-        List<Usuario> usuarios = usuarioService.getAllUsuarios();
+    public ResponseEntity<List<UsuarioDTO>> getAllUsuarios() {
+        List<UsuarioDTO> usuarios = usuarioService.getAllUsuarios();
         return ResponseEntity.ok(usuarios);
     }
 

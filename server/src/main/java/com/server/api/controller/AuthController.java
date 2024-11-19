@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.server.api.dto.LoginDto;
+import com.server.api.dto.LoginDTO;
 import com.server.api.config.JwtUtil;
 import com.server.api.model.Usuario;
 import com.server.api.repository.UsuarioRepository;
@@ -54,12 +54,12 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Credenciales incorrectas")
     })
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginDto loginDto) {
-        UsernamePasswordAuthenticationToken login = new UsernamePasswordAuthenticationToken(loginDto.getCorreo(), loginDto.getPassword());
+    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginDTO loginDTO) {
+        UsernamePasswordAuthenticationToken login = new UsernamePasswordAuthenticationToken(loginDTO.getCorreo(), loginDTO.getPassword());
         try {
             Authentication authentication = authenticationManager.authenticate(login);
             if (authentication.isAuthenticated()) {
-                String jwt = jwtUtil.create(loginDto.getCorreo());
+                String jwt = jwtUtil.create(loginDTO.getCorreo());
                 Map<String, String> response = new HashMap<>();
                 response.put("token", jwt);
                 return ResponseEntity.ok(response);

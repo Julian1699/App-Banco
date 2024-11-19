@@ -10,7 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.sql.Timestamp;
+import com.server.api.dto.UsuarioDTO;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
@@ -22,10 +24,24 @@ public class UsuarioServiceImpl implements UsuarioService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public List<Usuario> getAllUsuarios() {
-        return usuarioRepository.findAll();
-    }
-
+    public List<UsuarioDTO> getAllUsuarios() {
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        return usuarios.stream()
+                .map(usuario -> new UsuarioDTO(
+                        usuario.getNombres(),
+                        usuario.getCorreo(),
+                        usuario.getTelefono(),
+                        usuario.getDireccion(),
+                        usuario.getCiudadResidencia() != null ? usuario.getCiudadResidencia().getId() : null,
+                        usuario.getProfesion() != null ? usuario.getProfesion().getId() : null,
+                        usuario.getTipoTrabajo() != null ? usuario.getTipoTrabajo().getId() : null,
+                        usuario.getEstadoCivil() != null ? usuario.getEstadoCivil().getId() : null,
+                        usuario.getNivelEducativo() != null ? usuario.getNivelEducativo().getId() : null,
+                        usuario.getHabilitado()
+                ))
+                .collect(Collectors.toList());
+    }    
+  
     @Override
     public Usuario getUsuarioById(Long id) throws ResourceNotFoundException {
         return usuarioRepository.findById(id)
