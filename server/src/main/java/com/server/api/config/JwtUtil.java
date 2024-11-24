@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class JwtUtil {
 
     private static final String SECRET_KEY = "secret_key"; 
+    
     private static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET_KEY);
 
     /**
