@@ -14,9 +14,12 @@ public class JwtUtil {
     private static final String SECRET_KEY = "secret_key"; 
     private static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET_KEY);
 
-    public String create(String correo) {
+    public String create(Long userId, String correo, String nombres, Boolean habilitado) {
         return JWT.create()
-                .withSubject(correo)
+                .withSubject(userId.toString())
+                .withClaim("correo", correo)
+                .withClaim("nombre", nombres)
+                .withClaim("habilitado", habilitado)
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)))
                 .sign(ALGORITHM);
@@ -33,5 +36,13 @@ public class JwtUtil {
 
     public String getUsername(String jwt) {
         return JWT.require(ALGORITHM).build().verify(jwt).getSubject();
+    }
+
+    public String getUserIdFromToken(String jwt) {
+        return JWT.require(ALGORITHM).build().verify(jwt).getClaim("userId").asString();
+    }
+
+    public Boolean getUserHabilitadoFromToken(String jwt) {
+        return JWT.require(ALGORITHM).build().verify(jwt).getClaim("habilitado").asBoolean();
     }
 }

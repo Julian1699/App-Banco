@@ -30,32 +30,32 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         // 1. Validar que sea un Header Authorization valido
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-
+    
         if (authHeader == null || authHeader.isEmpty() || !authHeader.startsWith("Bearer")) {
             filterChain.doFilter(request, response);
             return;
         }
-
+    
         // 2. Validar que el JWT sea valido
         String jwt = authHeader.split(" ")[1].trim();
-
+    
         if (!this.jwtUtil.isValid(jwt)) {
             filterChain.doFilter(request, response);
             return;
         }
-
-        // 3. Cargar el usuario del UserDetailsService
-        String correo = this.jwtUtil.getUsername(jwt);  // Cambiado a correo
-        User user = (User) this.userDetailsService.loadUserByUsername(correo);
-
-        // 4. Cargar al usuario en el contexto de seguridad sin autoridad específica
+    
+        // 3. Cargar la información necesaria del token JWT
+        String correo = this.jwtUtil.getUsername(jwt);
+        String userId = this.jwtUtil.getUserIdFromToken(jwt);
+    
+        // 4. Crear un objeto de autenticación con la información extraída del JWT
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                user.getUsername(), user.getPassword(), user.getAuthorities()
+                correo, null, null  // No necesitamos el password ni authorities aquí
         );
-
+    
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
+    
         filterChain.doFilter(request, response);
-    }
+    }    
 }

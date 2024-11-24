@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,23 +54,41 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta, campos no válidos"),
             @ApiResponse(responseCode = "401", description = "Credenciales incorrectas")
     })
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginDTO loginDTO) {
-        UsernamePasswordAuthenticationToken login = new UsernamePasswordAuthenticationToken(loginDTO.getCorreo(), loginDTO.getPassword());
-        try {
-            Authentication authentication = authenticationManager.authenticate(login);
-            if (authentication.isAuthenticated()) {
-                String jwt = jwtUtil.create(loginDTO.getCorreo());
+@PostMapping("/login")
+public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginDTO loginDTO) {
+    UsernamePasswordAuthenticationToken login = new UsernamePasswordAuthenticationToken(loginDTO.getCorreo(), loginDTO.getPassword());
+    try {
+        Authentication authentication = authenticationManager.authenticate(login);
+        if (authentication.isAuthenticated()) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            // Buscar el usuario autenticado desde los detalles proporcionados por AuthenticationManager
+            Optional<Usuario> usuarioOptional = userRepository.findByCorreo(userDetails.getUsername());
+
+            if (usuarioOptional.isPresent()) {
+                Usuario usuario = usuarioOptional.get();
+
+                // Crear el token JWT con los detalles necesarios
+                String jwt = jwtUtil.create(
+                        usuario.getId(),
+                        usuario.getCorreo(),
+                        usuario.getNombres(),
+                        usuario.getHabilitado()
+                );
+
+                // Construir la respuesta
                 Map<String, String> response = new HashMap<>();
                 response.put("token", jwt);
                 return ResponseEntity.ok(response);
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Usuario no encontrado"));
             }
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Credenciales incorrectas"));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    } catch (BadCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Credenciales incorrectas"));
     }
+}
 
     @Operation(
             summary = "Obtener usuario actual",
