@@ -31,7 +31,7 @@ import jakarta.validation.Valid;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/auth")
-@Tag(name = "Login", description = "Autenticación de inicio de sesión con JWT")
+@Tag(name = "Login", description = "Autenticación de inicio de sesión con JWT")  // Anotación Swagger para documentar el endpoint
 public class AuthController {
 
     @Autowired
@@ -43,9 +43,10 @@ public class AuthController {
     @Autowired
     private UsuarioRepository userRepository;
 
-    // Mapa en memoria para rastrear los intentos fallidos
+    // Mapa en memoria para rastrear los intentos fallidos de inicio de sesión
     private final Map<String, Integer> loginAttempts = new HashMap<>();
 
+    // Máximo número de intentos fallidos permitidos
     private static final int MAX_ATTEMPTS = 3;
 
     @Operation(
@@ -61,62 +62,69 @@ public class AuthController {
     public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginDTO loginDTO) {
         String correo = loginDTO.getCorreo();
 
-        // Verificar si el usuario está en la base de datos
+        // Verificar si el usuario está registrado en la base de datos
         Optional<Usuario> usuarioOptional = userRepository.findByCorreo(correo);
 
         if (usuarioOptional.isEmpty()) {
-            // Si el usuario no existe
+            // Si el usuario no existe, devolver un mensaje de error
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", "El correo electrónico no está registrado."));
         }
 
         Usuario usuario = usuarioOptional.get();
 
-        // Verificar si el usuario está bloqueado (no habilitado)
+        // Verificar si el usuario está habilitado (bloqueado)
         if (!usuario.getHabilitado()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Usuario bloqueado, por favor contacte al soporte para desbloquear la cuenta."));
         }
 
+        // Crear un token de autenticación para validar credenciales
         UsernamePasswordAuthenticationToken login = new UsernamePasswordAuthenticationToken(correo, loginDTO.getPassword());
         try {
+            // Intentar autenticar al usuario con el AuthenticationManager
             Authentication authentication = authenticationManager.authenticate(login);
+
+            // Si la autenticación es exitosa
             if (authentication.isAuthenticated()) {
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-                // Restablecer intentos fallidos si la autenticación es exitosa
+                // Restablecer el contador de intentos fallidos si la autenticación es correcta
                 loginAttempts.remove(correo);
 
-                // Crear el token JWT con los detalles necesarios
+                // Crear el token JWT con la información del usuario
                 String jwt = jwtUtil.create(
-                        usuario.getId(),
-                        usuario.getCorreo(),
-                        usuario.getNombres(),
-                        usuario.getHabilitado()
+                        usuario.getId(),  // ID del usuario
+                        usuario.getCorreo(),  // Correo electrónico del usuario
+                        usuario.getNombres(),  // Nombre del usuario
+                        usuario.getHabilitado()  // Estado de habilitación
                 );
 
-                // Construir la respuesta
+                // Construir la respuesta con el token generado
                 Map<String, String> response = new HashMap<>();
                 response.put("token", jwt);
                 return ResponseEntity.ok(response);
             } else {
+                // Si la autenticación falla por alguna razón no especificada
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
         } catch (BadCredentialsException e) {
-            // Incrementar intentos fallidos
+            // Capturar excepción de credenciales incorrectas
+            // Incrementar el contador de intentos fallidos para el usuario
             int attempts = loginAttempts.getOrDefault(correo, 0);
             attempts++;
             loginAttempts.put(correo, attempts);
 
-            // Bloquear al usuario después del cuarto intento fallido
+            // Si se superan los intentos permitidos, bloquear al usuario
             if (attempts >= MAX_ATTEMPTS) {
-                usuario.setHabilitado(false);  // Actualizar el estado en la base de datos
+                usuario.setHabilitado(false);  // Actualizar el estado de habilitación en la base de datos
                 userRepository.save(usuario); // Guardar el cambio en la base de datos
 
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("error", "Usuario bloqueado, por favor contacte al soporte para desbloquear la cuenta."));
             }
 
+            // Responder con un mensaje de credenciales incorrectas
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Credenciales incorrectas"));
         }
