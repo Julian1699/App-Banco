@@ -1,6 +1,5 @@
 package com.server.api.controller;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -13,7 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +43,11 @@ public class AuthController {
     @Autowired
     private UsuarioRepository userRepository;
 
+    // Mapa en memoria para rastrear los intentos fallidos
+    private final Map<String, Integer> loginAttempts = new HashMap<>();
+
+    private static final int MAX_ATTEMPTS = 3;
+
     @Operation(
             summary = "Iniciar sesión en el sistema",
             description = "Con las credenciales correctas, devuelve un token Bearer para usar en cada solicitud HTTP.",
@@ -54,18 +57,35 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta, campos no válidos"),
             @ApiResponse(responseCode = "401", description = "Credenciales incorrectas")
     })
-@PostMapping("/login")
-public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginDTO loginDTO) {
-    UsernamePasswordAuthenticationToken login = new UsernamePasswordAuthenticationToken(loginDTO.getCorreo(), loginDTO.getPassword());
-    try {
-        Authentication authentication = authenticationManager.authenticate(login);
-        if (authentication.isAuthenticated()) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            // Buscar el usuario autenticado desde los detalles proporcionados por AuthenticationManager
-            Optional<Usuario> usuarioOptional = userRepository.findByCorreo(userDetails.getUsername());
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginDTO loginDTO) {
+        String correo = loginDTO.getCorreo();
 
-            if (usuarioOptional.isPresent()) {
-                Usuario usuario = usuarioOptional.get();
+        // Verificar si el usuario está en la base de datos
+        Optional<Usuario> usuarioOptional = userRepository.findByCorreo(correo);
+
+        if (usuarioOptional.isEmpty()) {
+            // Si el usuario no existe
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "El correo electrónico no está registrado."));
+        }
+
+        Usuario usuario = usuarioOptional.get();
+
+        // Verificar si el usuario está bloqueado (no habilitado)
+        if (!usuario.getHabilitado()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Usuario bloqueado, por favor contacte al soporte para desbloquear la cuenta."));
+        }
+
+        UsernamePasswordAuthenticationToken login = new UsernamePasswordAuthenticationToken(correo, loginDTO.getPassword());
+        try {
+            Authentication authentication = authenticationManager.authenticate(login);
+            if (authentication.isAuthenticated()) {
+                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+                // Restablecer intentos fallidos si la autenticación es exitosa
+                loginAttempts.remove(correo);
 
                 // Crear el token JWT con los detalles necesarios
                 String jwt = jwtUtil.create(
@@ -80,29 +100,25 @@ public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginDTO lo
                 response.put("token", jwt);
                 return ResponseEntity.ok(response);
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Usuario no encontrado"));
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-    } catch (BadCredentialsException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Credenciales incorrectas"));
-    }
-}
+        } catch (BadCredentialsException e) {
+            // Incrementar intentos fallidos
+            int attempts = loginAttempts.getOrDefault(correo, 0);
+            attempts++;
+            loginAttempts.put(correo, attempts);
 
-    @Operation(
-            summary = "Obtener usuario actual",
-            description = "Devuelve los detalles del usuario actualmente autenticado.",
-            tags = {"Usuario"})
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-    })
-    @GetMapping("/actual-usuario")
-    public ResponseEntity<Usuario> obtenerUsuarioActual(Principal principal) {
-        Optional<Usuario> userEntityOptional = userRepository.findByCorreo(principal.getName());
-        return userEntityOptional
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+            // Bloquear al usuario después del cuarto intento fallido
+            if (attempts >= MAX_ATTEMPTS) {
+                usuario.setHabilitado(false);  // Actualizar el estado en la base de datos
+                userRepository.save(usuario); // Guardar el cambio en la base de datos
+
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Usuario bloqueado, por favor contacte al soporte para desbloquear la cuenta."));
+            }
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Credenciales incorrectas"));
+        }
     }
 }
