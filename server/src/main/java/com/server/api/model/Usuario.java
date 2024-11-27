@@ -3,6 +3,9 @@ package com.server.api.model;
 import lombok.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
@@ -68,12 +71,18 @@ public class Usuario {
     @Column(precision = 15, scale = 2)
     private BigDecimal egresos;
 
+    @ManyToOne
+    @JoinColumn(name = "genero_id")
+    private ValoresLista genero;
+
     @Column(nullable = false)
     private Boolean habilitado = true;
 
-    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 

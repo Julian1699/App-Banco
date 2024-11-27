@@ -151,7 +151,8 @@ INSERT INTO listas (nombre, descripcion, habilitado, created_by) VALUES
 ('Tipo de Trabajo', 'Lista de tipos de contratos de trabajo', TRUE, 'admin'),
 ('Profesión', 'Lista de profesiones disponibles para los usuarios', TRUE, 'admin'),
 ('Estado Civil', 'Lista de estados civiles para los usuarios', TRUE, 'admin'),
-('Nivel Educativo', 'Lista de niveles educativos alcanzados por los usuarios', TRUE, 'admin');
+('Nivel Educativo', 'Lista de niveles educativos alcanzados por los usuarios', TRUE, 'admin'),
+('Género', 'Lista de géneros disponibles para los usuarios', TRUE, 'admin');
 
 INSERT INTO valores_listas (lista_id, valor, descripcion, orden, habilitado, created_by) VALUES
 ((SELECT id FROM listas WHERE nombre = 'Tipo de Identificación'), 'Cédula de Ciudadanía', 'Documento de identificación nacional', 1, TRUE, 'admin'),
@@ -180,4 +181,7 @@ INSERT INTO valores_listas (lista_id, valor, descripcion, orden, habilitado, cre
 ((SELECT id FROM listas WHERE nombre = 'Nivel Educativo'), 'Técnico', 'Usuario tiene estudios técnicos', 3, TRUE, 'admin'),
 ((SELECT id FROM listas WHERE nombre = 'Nivel Educativo'), 'Tecnológico', 'Usuario tiene estudios tecnológicos', 4, TRUE, 'admin'),
 ((SELECT id FROM listas WHERE nombre = 'Nivel Educativo'), 'Universitario', 'Usuario tiene estudios universitarios', 5, TRUE, 'admin'),
-((SELECT id FROM listas WHERE nombre = 'Nivel Educativo'), 'Postgrado', 'Usuario tiene estudios de postgrado', 6, TRUE, 'admin');
+((SELECT id FROM listas WHERE nombre = 'Nivel Educativo'), 'Postgrado', 'Usuario tiene estudios de postgrado', 6, TRUE, 'admin'),
+((SELECT id FROM listas WHERE nombre = 'Género'), 'Masculino', 'Género masculino', 1, TRUE, 'admin'),
+((SELECT id FROM listas WHERE nombre = 'Género'), 'Femenino', 'Género femenino', 2, TRUE, 'admin'),
+((SELECT id FROM listas WHERE nombre = 'Género'), 'Otro', 'Otro género o no especificado', 5, TRUE, 'admin');
