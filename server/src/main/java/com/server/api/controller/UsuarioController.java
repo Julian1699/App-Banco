@@ -2,6 +2,7 @@ package com.server.api.controller;
 
 import com.server.api.model.Usuario;
 import com.server.api.service.UsuarioService;
+import com.server.api.dto.UsuarioConRolesDTO;
 import com.server.api.dto.UsuarioDTO;
 import com.server.api.exception.ResourceNotFoundException;
 
@@ -24,13 +25,7 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/usuarios")
-@SecurityScheme(name = "Bearer Auth",
-        description = "Autenticación JWT requerida para acceder a la mayoría de los endpoints",
-        scheme = "Bearer",
-        type = SecuritySchemeType.HTTP,
-        bearerFormat = "JWT",
-        in = SecuritySchemeIn.HEADER
-)
+@SecurityScheme(name = "Bearer Auth", description = "Autenticación JWT requerida para acceder a la mayoría de los endpoints", scheme = "Bearer", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", in = SecuritySchemeIn.HEADER)
 @Tag(name = "Usuarios", description = "Operaciones relacionadas con los usuarios")
 public class UsuarioController {
 
@@ -105,5 +100,26 @@ public class UsuarioController {
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException("Usuario no encontrado con el ID: " + id);
         }
+    }
+
+    @Operation(summary = "Asignar roles a un usuario", description = "Asigna uno o varios roles a un usuario específico.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Roles asignados correctamente al usuario"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    @PutMapping("/{id}/roles")
+    public ResponseEntity<UsuarioDTO> assignRolesToUsuario(@PathVariable Long id, @RequestBody List<Long> roleIds) {
+        UsuarioDTO updatedUsuario = usuarioService.assignRoles(id, roleIds);
+        return ResponseEntity.ok(updatedUsuario);
+    }
+
+    @Operation(summary = "Obtener todos los usuarios con sus roles", description = "Devuelve una lista de todos los usuarios con sus roles asignados.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de usuarios con sus roles obtenida correctamente")
+    })
+    @GetMapping("/roles")
+    public ResponseEntity<List<UsuarioConRolesDTO>> getAllUsuariosWithRoles() {
+        List<UsuarioConRolesDTO> usuariosConRoles = usuarioService.getAllUsuariosWithRoles();
+        return ResponseEntity.ok(usuariosConRoles);
     }
 }

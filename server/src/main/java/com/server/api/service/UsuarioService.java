@@ -1,8 +1,11 @@
 package com.server.api.service;
 
 import com.server.api.model.Usuario;
+import com.server.api.dto.RolDTO;
+import com.server.api.dto.UsuarioConRolesDTO;
 import com.server.api.dto.UsuarioDTO;
 import com.server.api.exception.ResourceNotFoundException;
+
 import java.util.List;
 
 public interface UsuarioService {
@@ -11,4 +14,6 @@ public interface UsuarioService {
     Usuario saveUsuario(Usuario usuario);
     Usuario updateUsuario(Long id, Usuario usuarioDetails) throws ResourceNotFoundException;
     void deleteUsuario(Long id) throws ResourceNotFoundException;
+    UsuarioDTO assignRoles(Long usuarioId, List<Long> roleIds) throws ResourceNotFoundException;
+    List<UsuarioConRolesDTO> getAllUsuariosWithRoles();
 }

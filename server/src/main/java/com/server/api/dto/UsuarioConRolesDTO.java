@@ -4,19 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioDTO {
+public class UsuarioConRolesDTO {
     private Long id;
     private String nombres;
     private String correo;
-    private String telefono;
-    private String direccion;
     private Long ciudadResidenciaId;
-    private Long profesionId;
-    private Long tipoTrabajoId;
-    private Long estadoCivilId;
-    private Long nivelEducativoId;
     private Boolean habilitado;
+    private List<RolDTO> roles; // Lista de roles asignados al usuario
 }

@@ -225,3 +225,18 @@ INSERT INTO usuarios (
     CURRENT_TIMESTAMP,                -- created_at (fecha de creación)
     'admin'                           -- created_by (puedes cambiar esto según el contexto)
 );
+
+INSERT INTO roles (nombre, descripcion, habilitado, created_at, created_by)
+VALUES ('Administrador', 'Rol con acceso total al sistema', TRUE, CURRENT_TIMESTAMP, 1);
+INSERT INTO roles (nombre, descripcion, habilitado, created_at, created_by)
+VALUES ('Cajero', 'Responsable de realizar transacciones bancarias directas con los clientes', TRUE, CURRENT_TIMESTAMP, 1);
+INSERT INTO roles (nombre, descripcion, habilitado, created_at, created_by)
+VALUES ('Gerente de Sucursal', 'Responsable de la administración y supervisión general de una sucursal bancaria', TRUE, CURRENT_TIMESTAMP, 1);
+INSERT INTO roles (nombre, descripcion, habilitado, created_at, created_by)
+VALUES ('Oficial de Crédito', 'Evaluar y recomendar la aprobación o denegación de solicitudes de crédito', TRUE, CURRENT_TIMESTAMP, 1);
+INSERT INTO roles (nombre, descripcion, habilitado, created_at, created_by)
+VALUES ('Analista de Riesgos', 'Identificación, evaluación y análisis de riesgos financieros y de crédito', TRUE, CURRENT_TIMESTAMP, 1);
+INSERT INTO roles (nombre, descripcion, habilitado, created_at, created_by)
+VALUES ('Servicio al Cliente', 'Brindar asistencia y soporte a los clientes para resolver sus consultas bancarias', TRUE, CURRENT_TIMESTAMP, 1);
+INSERT INTO roles (nombre, descripcion, habilitado, created_at, created_by)
+VALUES ('Auditor', 'Revisar y evaluar la integridad de las operaciones y registros financieros del banco', TRUE, CURRENT_TIMESTAMP, 1);
