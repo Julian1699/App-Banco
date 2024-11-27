@@ -55,37 +55,68 @@ public class RolServiceImpl implements RolService {
     }
 
     @Override
-    public Rol saveRol(Rol rol) {
-        // Establecer valores automáticos para crear un rol
-        Long usuarioIdAutenticado = getAuthenticatedUserId();
-
-        // Asignar campos automáticos
-        rol.setHabilitado(true); // El campo habilitado siempre es true al crear un nuevo rol
-        if (rol.getCreatedAt() == null) {
-            rol.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+    public RolDTO saveRol(RolDTO rolDTO) {
+        // Obtener el usuario autenticado
+        Usuario usuarioAutenticado = getAuthenticatedUser();
+    
+        if (usuarioAutenticado == null) {
+            throw new IllegalArgumentException("No se pudo identificar al usuario autenticado para realizar la operación.");
         }
-        rol.setCreatedBy(usuarioIdAutenticado != null ? usuarioIdAutenticado.toString() : null);
-
-        return rolRepository.save(rol);
-    }
+    
+        // Convertir DTO a entidad Rol
+        Rol rol = new Rol();
+        rol.setNombre(rolDTO.getNombre());
+        rol.setDescripcion(rolDTO.getDescripcion());
+        rol.setHabilitado(true);  // Siempre es true cuando se crea un rol
+    
+        // Asignar campos automáticos
+        rol.setCreatedBy(usuarioAutenticado);
+        rol.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+    
+        // Guardar el rol
+        Rol savedRol = rolRepository.save(rol);
+    
+        // Convertir la entidad guardada a DTO para la respuesta
+        return new RolDTO(
+                savedRol.getId(),
+                savedRol.getNombre(),
+                savedRol.getDescripcion(),
+                savedRol.getHabilitado()
+        );
+    }    
 
     @Override
-    public Rol updateRol(Long id, Rol rolDetails) throws ResourceNotFoundException {
+    public RolDTO updateRol(Long id, RolDTO rolDTO) throws ResourceNotFoundException {
         // Obtener el rol existente de la base de datos
         Rol rol = getRolById(id);
-
+    
+        // Obtener el usuario autenticado
+        Usuario usuarioAutenticado = getAuthenticatedUser();
+    
+        if (usuarioAutenticado == null) {
+            throw new IllegalArgumentException("No se pudo identificar al usuario autenticado para realizar la operación.");
+        }
+    
         // Actualizar los campos permitidos
-        rol.setNombre(rolDetails.getNombre());
-        rol.setDescripcion(rolDetails.getDescripcion());
-        rol.setHabilitado(rolDetails.getHabilitado()); // Actualizar con el nuevo valor
-
-        // Asignar campos automáticos
+        rol.setNombre(rolDTO.getNombre());
+        rol.setDescripcion(rolDTO.getDescripcion());
+        rol.setHabilitado(rolDTO.getHabilitado());
+    
+        // Asignar campos automáticos de actualización
         rol.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        Long usuarioIdAutenticado = getAuthenticatedUserId();
-        rol.setUpdatedBy(usuarioIdAutenticado != null ? usuarioIdAutenticado.toString() : null);
-
-        return rolRepository.save(rol);
-    }
+        rol.setUpdatedBy(usuarioAutenticado);
+    
+        // Guardar el rol actualizado
+        Rol updatedRol = rolRepository.save(rol);
+    
+        // Convertir la entidad a DTO para la respuesta
+        return new RolDTO(
+                updatedRol.getId(),
+                updatedRol.getNombre(),
+                updatedRol.getDescripcion(),
+                updatedRol.getHabilitado()
+        );
+    }    
 
     @Override
     public void deleteRol(Long id) throws ResourceNotFoundException {
@@ -93,15 +124,14 @@ public class RolServiceImpl implements RolService {
         rolRepository.delete(rol);
     }
 
-    // Método para obtener el ID del usuario autenticado desde el token JWT
-    private Long getAuthenticatedUserId() {
+    // Método para obtener el Usuario autenticado desde el token JWT
+    private Usuario getAuthenticatedUser() {
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String jwt = authHeader.substring(7); // Eliminar "Bearer " del header para obtener el token
             String correo = jwtUtil.getUsername(jwt); // Obtener el correo del JWT
             if (correo != null) {
-                Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
-                return usuario != null ? usuario.getId() : null;
+                return usuarioRepository.findByCorreo(correo).orElse(null);
             }
         }
         return null;

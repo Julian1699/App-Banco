@@ -68,8 +68,8 @@ public class RolController {
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta, datos de rol no válidos")
     })
     @PostMapping
-    public ResponseEntity<Rol> createRol(@Valid @RequestBody Rol rol) {
-        Rol savedRol = rolService.saveRol(rol);
+    public ResponseEntity<RolDTO> createRol(@Valid @RequestBody RolDTO rolDTO) {
+        RolDTO savedRol = rolService.saveRol(rolDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRol);
     }
 
@@ -79,13 +79,10 @@ public class RolController {
             @ApiResponse(responseCode = "404", description = "Rol no encontrado")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Rol> updateRol(@PathVariable Long id, @Valid @RequestBody Rol rolDetails) {
-        Rol updatedRol = rolService.updateRol(id, rolDetails);
-        if (updatedRol == null) {
-            throw new ResourceNotFoundException("Rol no encontrado con el ID: " + id);
-        }
+    public ResponseEntity<RolDTO> updateRol(@PathVariable Long id, @Valid @RequestBody RolDTO rolDTO) {
+        RolDTO updatedRol = rolService.updateRol(id, rolDTO);
         return ResponseEntity.ok(updatedRol);
-    }
+    }    
 
     @Operation(summary = "Eliminar un rol", description = "Elimina un rol específico mediante su ID.")
     @ApiResponses({

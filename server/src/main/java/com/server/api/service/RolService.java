@@ -9,7 +9,7 @@ import java.util.List;
 public interface RolService {
     List<RolDTO> getAllRoles(String nombre, Boolean habilitado);
     Rol getRolById(Long id) throws ResourceNotFoundException;
-    Rol saveRol(Rol rol);
-    Rol updateRol(Long id, Rol rolDetails) throws ResourceNotFoundException;
+    RolDTO saveRol(RolDTO rolDTO);
+    RolDTO updateRol(Long id, RolDTO rolDTO) throws ResourceNotFoundException;
     void deleteRol(Long id) throws ResourceNotFoundException;
 }

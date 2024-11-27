@@ -185,3 +185,43 @@ INSERT INTO valores_listas (lista_id, valor, descripcion, orden, habilitado, cre
 ((SELECT id FROM listas WHERE nombre = 'Género'), 'Masculino', 'Género masculino', 1, TRUE, 'admin'),
 ((SELECT id FROM listas WHERE nombre = 'Género'), 'Femenino', 'Género femenino', 2, TRUE, 'admin'),
 ((SELECT id FROM listas WHERE nombre = 'Género'), 'Otro', 'Otro género o no especificado', 5, TRUE, 'admin');
+
+INSERT INTO usuarios (
+    identificacion_id,
+    numero_identificacion,
+    nombres,
+    correo,
+    password,
+    telefono,
+    direccion,
+    ciudad_residencia_id,
+    profesion_id,
+    tipo_trabajo_id,
+    estado_civil_id,
+    nivel_educativo_id,
+    ingresos,
+    egresos,
+    genero_id,
+    habilitado,
+    created_at,
+    created_by
+) VALUES (
+    4,                                -- identificacion_id
+    '123456755879',                   -- numero_identificacion
+    'Ricardo Milos',                  -- nombres
+    'ricardo.milos@example.com',     -- correo
+    '$2a$10$n70LMB19L0yezKtvp94GROEHWM7wpWnMifH5FlUr6lIs0ZkUUMARO', -- password (123)
+    '555-1234',                       -- telefono
+    'Calle 123, Ciudad de Ejemplo',   -- direccion
+    59,                               -- ciudad_residencia_id
+    13,                               -- profesion_id
+    13,                               -- tipo_trabajo_id
+    20,                               -- estado_civil_id
+    29,                               -- nivel_educativo_id
+    5000.00,                          -- ingresos
+    2000.00,                          -- egresos
+    31,                               -- genero_id
+    true,                             -- habilitado
+    CURRENT_TIMESTAMP,                -- created_at (fecha de creación)
+    'admin'                           -- created_by (puedes cambiar esto según el contexto)
+);
