@@ -2,7 +2,6 @@ package com.server.api.model;
 
 import lombok.*;
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -22,6 +21,10 @@ public class Permiso {
 
     @Column
     private String descripcion;
+
+    @ManyToOne
+    @JoinColumn(name = "modulo_id", foreignKey = @ForeignKey(name = "fk_permiso_modulo"), nullable = false)
+    private ValoresLista modulo;  // Relación con ValoresLista para representar el módulo al que pertenece el permiso
 
     @Column(nullable = false)
     private Boolean habilitado = true;

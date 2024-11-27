@@ -240,3 +240,15 @@ INSERT INTO roles (nombre, descripcion, habilitado, created_at, created_by)
 VALUES ('Servicio al Cliente', 'Brindar asistencia y soporte a los clientes para resolver sus consultas bancarias', TRUE, CURRENT_TIMESTAMP, 1);
 INSERT INTO roles (nombre, descripcion, habilitado, created_at, created_by)
 VALUES ('Auditor', 'Revisar y evaluar la integridad de las operaciones y registros financieros del banco', TRUE, CURRENT_TIMESTAMP, 1);
+
+-- Crear los permisos para acceder a cada módulo y asignar el módulo correspondiente
+INSERT INTO permisos (nombre, descripcion, habilitado, modulo_id, created_by) VALUES
+('ACCESO_MODULO_ROLES', 'Permiso para acceder a los endpoints del módulo de Roles', TRUE, (SELECT id FROM valores_listas WHERE valor = 'Roles' LIMIT 1), 'admin'),
+('ACCESO_MODULO_USUARIOS', 'Permiso para acceder a los endpoints del módulo de Usuarios', TRUE, (SELECT id FROM valores_listas WHERE valor = 'Usuarios' LIMIT 1), 'admin'),
+('ACCESO_MODULO_PERMISOS_ROLES', 'Permiso para acceder a los endpoints del módulo de Permisos a Roles', TRUE, (SELECT id FROM valores_listas WHERE valor = 'Permisos a Roles' LIMIT 1), 'admin');
+
+-- Asignar estos permisos al rol administrador
+INSERT INTO roles_permisos (rol_id, permiso_id, habilitado) VALUES
+((SELECT id FROM roles WHERE nombre = 'Administrador'), (SELECT id FROM permisos WHERE nombre = 'ACCESO_MODULO_ROLES'), TRUE),
+((SELECT id FROM roles WHERE nombre = 'Administrador'), (SELECT id FROM permisos WHERE nombre = 'ACCESO_MODULO_USUARIOS'), TRUE),
+((SELECT id FROM roles WHERE nombre = 'Administrador'), (SELECT id FROM permisos WHERE nombre = 'ACCESO_MODULO_PERMISOS_ROLES'), TRUE);
