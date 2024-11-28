@@ -27,26 +27,26 @@ public class JwtUtil {
      * @param nombres    Los nombres del usuario
      * @param habilitado Estado de habilitación del usuario
      * @param roles      Lista de roles del usuario
-     * @param permisos   Lista de permisos del usuario
+     * @param permisos   Lista de IDs de permisos del usuario
      * @return El token JWT generado
      */
     public String create(Long userId, String correo, String nombres, Boolean habilitado, List<String> roles,
-            List<String> permisos) {
+            List<Long> permisos) {
         return JWT.create()
                 .withSubject(userId.toString())
                 .withClaim("correo", correo)
                 .withClaim("nombre", nombres)
                 .withClaim("habilitado", habilitado)
-                .withClaim("rol", roles) // Agregar roles al token
-                .withClaim("permisos", permisos) // Agregar permisos al token
+                .withClaim("roles", roles)
+                .withClaim("permisos", permisos) // Guardar IDs de permisos en lugar de nombres
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)))
                 .sign(ALGORITHM);
     }
 
     // Método para extraer permisos del token
-    public List<String> getUserPermissionsFromToken(String jwt) {
-        return JWT.require(ALGORITHM).build().verify(jwt).getClaim("permisos").asList(String.class);
+    public List<Long> getUserPermissionsFromToken(String jwt) {
+        return JWT.require(ALGORITHM).build().verify(jwt).getClaim("permisos").asList(Long.class);
     }
 
     // Método para extraer roles del token

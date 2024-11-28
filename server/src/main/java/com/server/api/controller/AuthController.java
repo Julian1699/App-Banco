@@ -96,15 +96,15 @@ public class AuthController {
                 // Restablecer el contador de intentos fallidos si la autenticación es correcta
                 loginAttempts.remove(correo);
 
-                // Obtener permisos del usuario a partir de sus roles
-                List<String> permisos = usuario.getRoles().stream()
+                // Obtener permisos del usuario (IDs de permisos)
+                List<Long> permisos = usuario.getRoles().stream()
                         .flatMap(rol -> rol.getRolPermisos().stream())
-                        .filter(RolPermiso::getHabilitado) // Solo agregar los permisos que estén habilitados
-                        .map(rolPermiso -> rolPermiso.getPermiso().getNombre())
-                        .distinct() // Para evitar permisos duplicados en caso de múltiples roles
+                        .filter(RolPermiso::getHabilitado)
+                        .map(rolPermiso -> rolPermiso.getPermiso().getId())
+                        .distinct()
                         .collect(Collectors.toList());
 
-                                        // Obtener roles del usuario
+                // Obtener roles del usuario
                 List<String> roles = usuario.getRoles().stream()
                 .map(rol -> rol.getNombre())
                 .collect(Collectors.toList());
