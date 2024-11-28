@@ -252,3 +252,5 @@ INSERT INTO roles_permisos (rol_id, permiso_id, habilitado) VALUES
 ((SELECT id FROM roles WHERE nombre = 'Administrador'), (SELECT id FROM permisos WHERE nombre = 'ACCESO_MODULO_ROLES'), TRUE),
 ((SELECT id FROM roles WHERE nombre = 'Administrador'), (SELECT id FROM permisos WHERE nombre = 'ACCESO_MODULO_USUARIOS'), TRUE),
 ((SELECT id FROM roles WHERE nombre = 'Administrador'), (SELECT id FROM permisos WHERE nombre = 'ACCESO_MODULO_PERMISOS_ROLES'), TRUE);
+
+INSERT INTO public.usuario_rol (usuario_id,rol_id) VALUES(1, 1);

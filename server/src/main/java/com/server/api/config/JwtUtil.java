@@ -6,6 +6,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -14,28 +15,43 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class JwtUtil {
 
-    private static final String SECRET_KEY = "secret_key"; 
-    
+    private static final String SECRET_KEY = "secret_key";
+
     private static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET_KEY);
 
     /**
      * Crea un token JWT con la información proporcionada.
      * 
-     * @param userId El ID del usuario
-     * @param correo El correo del usuario
-     * @param nombres Los nombres del usuario
+     * @param userId     El ID del usuario
+     * @param correo     El correo del usuario
+     * @param nombres    Los nombres del usuario
      * @param habilitado Estado de habilitación del usuario
+     * @param roles      Lista de roles del usuario
+     * @param permisos   Lista de permisos del usuario
      * @return El token JWT generado
      */
-    public String create(Long userId, String correo, String nombres, Boolean habilitado) {
+    public String create(Long userId, String correo, String nombres, Boolean habilitado, List<String> roles,
+            List<String> permisos) {
         return JWT.create()
-                .withSubject(userId.toString())  // El subject se establece como el ID del usuario
-                .withClaim("correo", correo)  // Correo del usuario
-                .withClaim("nombre", nombres)  // Nombre completo del usuario
-                .withClaim("habilitado", habilitado)  // Estado habilitado/deshabilitado del usuario
-                .withIssuedAt(new Date())  // Fecha de creación del token
-                .withExpiresAt(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)))  // Fecha de expiración del token
+                .withSubject(userId.toString())
+                .withClaim("correo", correo)
+                .withClaim("nombre", nombres)
+                .withClaim("habilitado", habilitado)
+                .withClaim("rol", roles) // Agregar roles al token
+                .withClaim("permisos", permisos) // Agregar permisos al token
+                .withIssuedAt(new Date())
+                .withExpiresAt(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)))
                 .sign(ALGORITHM);
+    }
+
+    // Método para extraer permisos del token
+    public List<String> getUserPermissionsFromToken(String jwt) {
+        return JWT.require(ALGORITHM).build().verify(jwt).getClaim("permisos").asList(String.class);
+    }
+
+    // Método para extraer roles del token
+    public List<String> getUserRolesFromToken(String jwt) {
+        return JWT.require(ALGORITHM).build().verify(jwt).getClaim("roles").asList(String.class);
     }
 
     /**
@@ -52,6 +68,7 @@ public class JwtUtil {
             return false;
         }
     }
+
     /**
      * Extrae el userId del token JWT.
      * 
