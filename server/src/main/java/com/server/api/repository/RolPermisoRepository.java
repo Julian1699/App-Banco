@@ -12,4 +12,5 @@ import com.server.api.model.RolPermiso;
 public interface RolPermisoRepository extends JpaRepository<RolPermiso, Long> {
     List<RolPermiso> findByRol(Rol rol);
     void deleteByRol(Rol rol);
+    List<RolPermiso> findByRolIdAndHabilitadoTrue(Long rolId);
 }

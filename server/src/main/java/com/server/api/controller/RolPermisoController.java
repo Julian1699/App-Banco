@@ -2,7 +2,10 @@ package com.server.api.controller;
 
 import com.server.api.dto.CategoriaDTO;
 import com.server.api.dto.RolConPermisosDTO;
+import com.server.api.dto.UsuarioConRolesDTO;
+import com.server.api.dto.UsuarioDTO;
 import com.server.api.service.RolPermisoService;
+import com.server.api.service.UsuarioService;
 import com.server.api.exception.ResourceNotFoundException;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +28,9 @@ public class RolPermisoController {
 
     @Autowired
     private RolPermisoService rolPermisoService;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     @Operation(summary = "Obtener todas las categorías con sus módulos y permisos", description = "Devuelve todas las categorías junto con sus módulos y permisos asociados.")
     @ApiResponses({
@@ -56,5 +62,25 @@ public class RolPermisoController {
     public ResponseEntity<RolConPermisosDTO> getRolConPermisos(@PathVariable Long rolId) {
         RolConPermisosDTO rolConPermisosDTO = rolPermisoService.getRolConPermisos(rolId);
         return ResponseEntity.ok(rolConPermisosDTO);
+    }
+        @Operation(summary = "Asignar roles a un usuario", description = "Asigna uno o varios roles a un usuario específico.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Roles asignados correctamente al usuario"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    @PutMapping("/{id}/roles")
+    public ResponseEntity<UsuarioDTO> assignRolesToUsuario(@PathVariable Long id, @RequestBody List<Long> roleIds) {
+        UsuarioDTO updatedUsuario = usuarioService.assignRoles(id, roleIds);
+        return ResponseEntity.ok(updatedUsuario);
+    }
+
+    @Operation(summary = "Obtener todos los usuarios con sus roles", description = "Devuelve una lista de todos los usuarios con sus roles asignados.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de usuarios con sus roles obtenida correctamente")
+    })
+    @GetMapping("/roles")
+    public ResponseEntity<List<UsuarioConRolesDTO>> getAllUsuariosWithRoles() {
+        List<UsuarioConRolesDTO> usuariosConRoles = usuarioService.getAllUsuariosWithRoles();
+        return ResponseEntity.ok(usuariosConRoles);
     }
 }

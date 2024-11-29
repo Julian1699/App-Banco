@@ -3,6 +3,9 @@ package com.server.api.config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.server.api.service.RolPermisoService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -19,6 +22,8 @@ public class JwtUtil {
 
     private static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET_KEY);
 
+    @Autowired
+    private RolPermisoService rolPermisoService;
     /**
      * Crea un token JWT con la información proporcionada.
      * 
@@ -30,8 +35,7 @@ public class JwtUtil {
      * @param permisos   Lista de IDs de permisos del usuario
      * @return El token JWT generado
      */
-    public String create(Long userId, String correo, String nombres, Boolean habilitado, List<String> roles,
-            List<Long> permisos) {
+    public String create(Long userId, String correo, String nombres, Boolean habilitado, List<String> roles, List<Long> permisos) {
         return JWT.create()
                 .withSubject(userId.toString())
                 .withClaim("correo", correo)

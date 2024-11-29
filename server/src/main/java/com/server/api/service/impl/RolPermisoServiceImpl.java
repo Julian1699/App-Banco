@@ -101,24 +101,37 @@ public class RolPermisoServiceImpl implements RolPermisoService {
         List<Lista> categorias = listaRepository.findAll().stream()
                 .filter(lista -> "Categoría".equalsIgnoreCase(lista.getDescripcion()))
                 .collect(Collectors.toList());
-    
+
         // Mapear las categorías a DTOs con sus módulos y permisos
         return categorias.stream().map(categoria -> {
             // Buscar los módulos asociados a la categoría
             List<ValoresLista> modulos = valoresListaRepository.findByLista(categoria);
-    
+
             // Mapear cada módulo a su DTO, incluyendo sus permisos
             List<ModuloDTO> moduloDTOs = modulos.stream().map(modulo -> {
                 List<Permiso> permisos = permisoRepository.findByModulo(modulo);
                 List<PermisoDTO> permisoDTOs = permisos.stream()
                         .map(permiso -> new PermisoDTO(permiso.getId(), permiso.getNombre(), permiso.getDescripcion()))
                         .collect(Collectors.toList());
-    
+
                 return new ModuloDTO(modulo.getValor(), modulo.getDescripcion(), permisoDTOs);
             }).collect(Collectors.toList());
-    
+
             // Mapear la categoría y sus módulos
             return new CategoriaDTO(categoria.getNombre(), moduloDTOs);
         }).collect(Collectors.toList());
-    }    
+    }
+
+    public List<RolPermiso> getPermisosPorRol(Long rolId) {
+        // Recuperar solo los permisos que están habilitados
+        return rolPermisoRepository.findByRolIdAndHabilitadoTrue(rolId);
+    }
+
+    public List<Long> getPermisosIdsPorRol(Long rolId) {
+        // Filtrar y obtener solo los permisos habilitados
+        return rolPermisoRepository.findByRolIdAndHabilitadoTrue(rolId)
+                .stream()
+                .map(rolPermiso -> rolPermiso.getPermiso().getId())
+                .collect(Collectors.toList());
+    }
 }

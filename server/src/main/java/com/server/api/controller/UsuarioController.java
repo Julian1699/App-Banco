@@ -103,25 +103,4 @@ public class UsuarioController {
             throw new ResourceNotFoundException("Usuario no encontrado con el ID: " + id);
         }
     }
-
-    @Operation(summary = "Asignar roles a un usuario", description = "Asigna uno o varios roles a un usuario específico.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Roles asignados correctamente al usuario"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-    })
-    @PutMapping("/{id}/roles")
-    public ResponseEntity<UsuarioDTO> assignRolesToUsuario(@PathVariable Long id, @RequestBody List<Long> roleIds) {
-        UsuarioDTO updatedUsuario = usuarioService.assignRoles(id, roleIds);
-        return ResponseEntity.ok(updatedUsuario);
-    }
-
-    @Operation(summary = "Obtener todos los usuarios con sus roles", description = "Devuelve una lista de todos los usuarios con sus roles asignados.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista de usuarios con sus roles obtenida correctamente")
-    })
-    @GetMapping("/roles")
-    public ResponseEntity<List<UsuarioConRolesDTO>> getAllUsuariosWithRoles() {
-        List<UsuarioConRolesDTO> usuariosConRoles = usuarioService.getAllUsuariosWithRoles();
-        return ResponseEntity.ok(usuariosConRoles);
-    }
 }
