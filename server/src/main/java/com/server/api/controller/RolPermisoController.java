@@ -8,6 +8,7 @@ import com.server.api.exception.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/roles")
+@SecurityRequirement(name = "Bearer Auth")
 @Tag(name = "Roles y Permisos", description = "Operaciones relacionadas con los roles y permisos")
 public class RolPermisoController {
 

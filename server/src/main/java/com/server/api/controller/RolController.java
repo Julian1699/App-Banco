@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,6 +32,7 @@ import java.util.List;
         bearerFormat = "JWT",
         in = SecuritySchemeIn.HEADER
 )
+@SecurityRequirement(name = "Bearer Auth")
 @Tag(name = "Roles", description = "Operaciones relacionadas con los roles")
 public class RolController {
 
