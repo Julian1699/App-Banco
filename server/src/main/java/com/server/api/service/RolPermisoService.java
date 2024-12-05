@@ -13,4 +13,5 @@ public interface RolPermisoService {
     List<CategoriaDTO> getTodasLasCategoriasConModulosYPermisos();
     List<RolPermiso> getPermisosPorRol(Long rolId);
     List<Long> getPermisosIdsPorRol(Long rolId);
+    List<CategoriaDTO> getCategoriasConModulosYPermisosPorRol(Long rolId);
 }

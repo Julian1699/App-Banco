@@ -53,7 +53,7 @@ public class RolPermisoServiceImpl implements RolPermisoService {
         List<ModuloDTO> moduloDTOs = modulos.stream().map(modulo -> {
             List<Permiso> permisos = permisoRepository.findByModulo(modulo);
             List<PermisoDTO> permisoDTOs = permisos.stream()
-                    .map(permiso -> new PermisoDTO(permiso.getId(), permiso.getNombre(), permiso.getDescripcion()))
+                    .map(permiso -> new PermisoDTO(permiso.getId(), permiso.getNombre(), permiso.getDescripcion(), permiso.getHabilitado()))
                     .collect(Collectors.toList());
 
             return new ModuloDTO(modulo.getValor(), modulo.getDescripcion(), permisoDTOs);
@@ -88,7 +88,7 @@ public class RolPermisoServiceImpl implements RolPermisoService {
         List<PermisoDTO> permisosDTO = rol.getRolPermisos().stream()
                 .map(rolPermiso -> {
                     Permiso permiso = rolPermiso.getPermiso();
-                    return new PermisoDTO(permiso.getId(), permiso.getNombre(), permiso.getDescripcion());
+                    return new PermisoDTO(permiso.getId(), permiso.getNombre(), permiso.getDescripcion(), permiso.getHabilitado());
                 })
                 .collect(Collectors.toList());
 
@@ -111,7 +111,7 @@ public class RolPermisoServiceImpl implements RolPermisoService {
             List<ModuloDTO> moduloDTOs = modulos.stream().map(modulo -> {
                 List<Permiso> permisos = permisoRepository.findByModulo(modulo);
                 List<PermisoDTO> permisoDTOs = permisos.stream()
-                        .map(permiso -> new PermisoDTO(permiso.getId(), permiso.getNombre(), permiso.getDescripcion()))
+                        .map(permiso -> new PermisoDTO(permiso.getId(), permiso.getNombre(), permiso.getDescripcion(), permiso.getHabilitado()))
                         .collect(Collectors.toList());
 
                 return new ModuloDTO(modulo.getValor(), modulo.getDescripcion(), permisoDTOs);
@@ -134,4 +134,44 @@ public class RolPermisoServiceImpl implements RolPermisoService {
                 .map(rolPermiso -> rolPermiso.getPermiso().getId())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<CategoriaDTO> getCategoriasConModulosYPermisosPorRol(Long rolId) {
+        // Buscar el rol para verificar si existe
+        Rol rol = rolRepository.findById(rolId)
+                .orElseThrow(() -> new ResourceNotFoundException("Rol no encontrado con ID: " + rolId));
+
+        // Filtrar solo las listas con descripción "Categoría"
+        List<Lista> categorias = listaRepository.findAll().stream()
+                .filter(lista -> "Categoría".equalsIgnoreCase(lista.getDescripcion()))
+                .collect(Collectors.toList());
+
+        // Mapear las categorías a DTOs con sus módulos y permisos
+        return categorias.stream().map(categoria -> {
+            // Buscar los módulos asociados a la categoría
+            List<ValoresLista> modulos = valoresListaRepository.findByLista(categoria);
+
+            // Mapear cada módulo a su DTO, incluyendo sus permisos y verificar si están
+            // habilitados para el rol
+            List<ModuloDTO> moduloDTOs = modulos.stream().map(modulo -> {
+                List<Permiso> permisos = permisoRepository.findByModulo(modulo);
+                List<PermisoDTO> permisoDTOs = permisos.stream()
+                        .map(permiso -> {
+                            // Verificar si el permiso está habilitado para el rol específico
+                            boolean habilitado = rol.getRolPermisos().stream()
+                                    .anyMatch(rolPermiso -> rolPermiso.getPermiso().getId().equals(permiso.getId())
+                                            && rolPermiso.getHabilitado());
+
+                            return new PermisoDTO(permiso.getId(), permiso.getNombre(), permiso.getDescripcion(),
+                                    habilitado);
+                        })
+                        .collect(Collectors.toList());
+
+                return new ModuloDTO(modulo.getValor(), modulo.getDescripcion(), permisoDTOs);
+            }).collect(Collectors.toList());
+
+            return new CategoriaDTO(categoria.getNombre(), moduloDTOs);
+        }).collect(Collectors.toList());
+    }
+
 }
