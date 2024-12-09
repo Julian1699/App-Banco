@@ -12,25 +12,9 @@ VALUES
 
 INSERT INTO paises (nombre, codigo, habilitado, created_by) VALUES
 ('Argentina', 'ARG', TRUE, 'admin'),
-('Bolivia', 'BOL', TRUE, 'admin'),
 ('Brasil', 'BRA', TRUE, 'admin'),
-('Canadá', 'CAN', TRUE, 'admin'),
 ('Chile', 'CHL', TRUE, 'admin'),
-('Colombia', 'COL', TRUE, 'admin'),
-('Costa Rica', 'CRI', TRUE, 'admin'),
-('Cuba', 'CUB', TRUE, 'admin'),
-('Ecuador', 'ECU', TRUE, 'admin'),
-('El Salvador', 'SLV', TRUE, 'admin'),
-('España', 'ESP', TRUE, 'admin'),
-('Estados Unidos', 'USA', TRUE, 'admin'),
-('Guatemala', 'GTM', TRUE, 'admin'),
-('Honduras', 'HND', TRUE, 'admin'),
-('México', 'MEX', TRUE, 'admin'),
-('Nicaragua', 'NIC', TRUE, 'admin'),
-('Panamá', 'PAN', TRUE, 'admin'),
-('Paraguay', 'PRY', TRUE, 'admin'),
-('Perú', 'PER', TRUE, 'admin'),
-('Uruguay', 'URY', TRUE, 'admin');
+('Colombia', 'COL', TRUE, 'admin');
 
 INSERT INTO departamentos (nombre, pais_id, codigo, habilitado, created_by) VALUES
 ('Amazonas', (SELECT id FROM paises WHERE nombre = 'Colombia'), 'AMA', TRUE, 'admin'),
@@ -164,6 +148,7 @@ INSERT INTO valores_listas (lista_id, valor, descripcion, orden, habilitado, cre
 ((SELECT id FROM listas WHERE nombre = 'Tipo de Trabajo'), 'Prestación de servicios', 'Contrato por prestación de servicios específicos', 3, TRUE, 'admin'),
 ((SELECT id FROM listas WHERE nombre = 'Tipo de Trabajo'), 'Prácticas', 'Contrato para prácticas profesionales o pasantías', 4, TRUE, 'admin'),
 ((SELECT id FROM listas WHERE nombre = 'Tipo de Trabajo'), 'Contrato de aprendizaje', 'Contrato para procesos de aprendizaje', 5, TRUE, 'admin'),
+((SELECT id FROM listas WHERE nombre = 'Tipo de Trabajo'), 'No tiene trabajo', 'No tiene trabajo', 6, TRUE, 'admin'),
 ((SELECT id FROM listas WHERE nombre = 'Profesión'), 'Ingeniero', 'Profesional en ingeniería', 1, TRUE, 'admin'),
 ((SELECT id FROM listas WHERE nombre = 'Profesión'), 'Médico', 'Profesional de la salud', 2, TRUE, 'admin'),
 ((SELECT id FROM listas WHERE nombre = 'Profesión'), 'Abogado', 'Profesional del derecho', 3, TRUE, 'admin'),
@@ -171,6 +156,7 @@ INSERT INTO valores_listas (lista_id, valor, descripcion, orden, habilitado, cre
 ((SELECT id FROM listas WHERE nombre = 'Profesión'), 'Arquitecto', 'Profesional en arquitectura', 5, TRUE, 'admin'),
 ((SELECT id FROM listas WHERE nombre = 'Profesión'), 'Docente', 'Profesional de la educación', 6, TRUE, 'admin'),
 ((SELECT id FROM listas WHERE nombre = 'Profesión'), 'Enfermero', 'Profesional en enfermería', 7, TRUE, 'admin'),
+((SELECT id FROM listas WHERE nombre = 'Profesión'), 'No tiene', 'No tiene profesión', 8, TRUE, 'admin'),
 ((SELECT id FROM listas WHERE nombre = 'Estado Civil'), 'Soltero', 'Usuario no está casado', 1, TRUE, 'admin'),
 ((SELECT id FROM listas WHERE nombre = 'Estado Civil'), 'Casado', 'Usuario está casado', 2, TRUE, 'admin'),
 ((SELECT id FROM listas WHERE nombre = 'Estado Civil'), 'Divorciado', 'Usuario está divorciado', 3, TRUE, 'admin'),

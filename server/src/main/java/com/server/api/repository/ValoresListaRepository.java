@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface ValoresListaRepository extends JpaRepository<ValoresLista, Long> {
     List<ValoresLista> findByLista(Lista lista);
+    List<ValoresLista> findByLista_IdAndHabilitadoTrue(Long listaId);
 }

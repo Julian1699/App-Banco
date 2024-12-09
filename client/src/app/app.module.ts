@@ -13,13 +13,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatSelectModule } from '@angular/material/select';
 import { HomeComponent } from './home/home.component';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    HomeComponent
+    HomeComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +35,8 @@ import { HomeComponent } from './home/home.component';
     MatInputModule, // Campos de texto
     MatButtonModule, // Botones
     MatIconModule, // Iconos de Material Design
-    MatCardModule // Tarjetas para diseño visual
+    MatCardModule, // Tarjetas para diseño visual
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]
