@@ -83,31 +83,52 @@ export class RegisterComponent implements OnInit {
 
   onRegister() {
     if (this.registerForm.valid) {
-      this.http
-        .post('http://localhost:8080/api/v1/usuarios', this.registerForm.value)
-        .subscribe({
-          next: (response) => {
-            Swal.fire({
-              icon: 'success',
-              title: '¡Registro exitoso!',
-              text: 'El usuario ha sido registrado correctamente.',
-              confirmButtonColor: '#4CAF50',
-            }).then(() => {
-              this.router.navigate(['/']); // Redirige al login
-            });
-          },
-          error: (err) => {
-            console.error('Error en el registro:', err);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text:
-                err.error.message ||
-                'Ocurrió un problema al registrar al usuario.',
-              confirmButtonColor: '#FF5733',
-            });
-          },
-        });
+      const formData = this.registerForm.value;
+
+      const payload = {
+        nombres: formData.nombres,
+        correo: formData.correo,
+        password: formData.password,
+        numeroIdentificacion: formData.numeroIdentificacion,
+        telefono: formData.telefono,
+        direccion: formData.direccion,
+        ingresos: formData.ingresos,
+        egresos: formData.egresos,
+        identificacion: { id: formData.identificacion },
+        profesion: { id: formData.profesion },
+        tipoTrabajo: { id: formData.tipoTrabajo },
+        estadoCivil: { id: formData.estadoCivil },
+        nivelEducativo: { id: formData.nivelEducativo },
+        genero: { id: formData.genero },
+        ciudadResidencia: { id: formData.ciudadResidencia },
+        habilitado: true,
+      };
+
+      console.log('Payload:', payload); // Debug
+
+      this.http.post('http://localhost:8080/api/v1/usuarios', payload).subscribe({
+        next: (response) => {
+          Swal.fire({
+            icon: 'success',
+            title: '¡Registro exitoso!',
+            text: 'El usuario ha sido registrado correctamente.',
+            confirmButtonColor: '#4CAF50',
+          }).then(() => {
+            this.router.navigate(['/']); // Redirige al login
+          });
+        },
+        error: (err) => {
+          console.error('Error en el registro:', err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text:
+              err.error.message ||
+              'Ocurrió un problema al registrar al usuario.',
+            confirmButtonColor: '#FF5733',
+          });
+        },
+      });
     } else {
       Swal.fire({
         icon: 'warning',

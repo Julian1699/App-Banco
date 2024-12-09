@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/roles")
+@RequestMapping("/api/v1/roles_permisos")
 @SecurityRequirement(name = "Bearer Auth")
 @Tag(name = "Roles y Permisos", description = "Operaciones relacionadas con los roles y permisos")
 public class RolPermisoController {

@@ -31,8 +31,14 @@ public class SecurityConfig {
             .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
             .requestMatchers("/api/v1/auth/**").permitAll()
             .requestMatchers("/api/v1/register/**").permitAll()
-            .requestMatchers("/api/v1/usuarios/**").hasAuthority("2") // Aquí se usa el ID del permiso
             .requestMatchers("/api/v1/roles/**").hasAuthority("1") // Aquí se usa el ID del permiso
+            .requestMatchers("/api/v1/roles_permisos/**").hasAuthority("1") // Aquí se usa el ID del permiso
+            // Liberar solo el método POST para crear usuarios
+            .requestMatchers(HttpMethod.POST, "/api/v1/usuarios").permitAll()
+            // Proteger los demás métodos del endpoint /usuarios
+            .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/**").hasAuthority("2")
+            .requestMatchers(HttpMethod.PUT, "/api/v1/usuarios/**").hasAuthority("2")
+            .requestMatchers(HttpMethod.DELETE, "/api/v1/usuarios/**").hasAuthority("2")
             .anyRequest().authenticated()
             .and()
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

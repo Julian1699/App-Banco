@@ -1,11 +1,9 @@
 -- Insertar la categoría "Roles y Permisos"
-INSERT INTO listas (nombre, descripcion, habilitado) 
-VALUES 
+INSERT INTO listas (nombre, descripcion, habilitado) VALUES 
 ('Roles y Permisos', 'Categoría', TRUE);
 
 -- Insertar módulos dentro de la categoría "Roles y Permisos"
-INSERT INTO valores_listas (lista_id, valor, descripcion, habilitado, orden)
-VALUES
+INSERT INTO valores_listas (lista_id, valor, descripcion, habilitado, orden) VALUES
 ((SELECT id FROM listas WHERE descripcion = 'Categoría' AND nombre = 'Roles y Permisos' LIMIT 1), 'Roles', 'Módulo para la gestión de roles', TRUE, 1),
 ((SELECT id FROM listas WHERE descripcion = 'Categoría' AND nombre = 'Roles y Permisos' LIMIT 1), 'Permisos a Roles', 'Módulo para asignar permisos a roles', TRUE, 2),
 ((SELECT id FROM listas WHERE descripcion = 'Categoría' AND nombre = 'Roles y Permisos' LIMIT 1), 'Usuarios', 'Módulo para la gestión de usuarios', TRUE, 3);
@@ -238,6 +236,8 @@ INSERT INTO roles (nombre, descripcion, habilitado, created_at, created_by)
 VALUES ('Servicio al Cliente', 'Brindar asistencia y soporte a los clientes para resolver sus consultas bancarias', TRUE, CURRENT_TIMESTAMP, 1);
 INSERT INTO roles (nombre, descripcion, habilitado, created_at, created_by)
 VALUES ('Auditor', 'Revisar y evaluar la integridad de las operaciones y registros financieros del banco', TRUE, CURRENT_TIMESTAMP, 1);
+INSERT INTO roles (nombre, descripcion, habilitado, created_at, created_by)
+VALUES ('Cliente', 'Usuario normal de la aplicacion', TRUE, CURRENT_TIMESTAMP, 1);
 
 -- Crear los permisos para acceder a cada módulo y asignar el módulo correspondiente
 INSERT INTO permisos (nombre, descripcion, habilitado, modulo_id, created_by) VALUES
