@@ -95,11 +95,9 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CuentaBancaria> cuentasBancarias;
 
-    @ManyToMany
-    @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "rol_id"))
-    private List<Rol> roles; // Relación de muchos a muchos con Rol
-
-    @ManyToMany
-    @JoinTable(name = "usuario_sede", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "sede_id"))
-    private List<Sede> sedes;
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UsuarioRol> usuarioRoles;
+    
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UsuarioSede> usuarioSedes;
 }

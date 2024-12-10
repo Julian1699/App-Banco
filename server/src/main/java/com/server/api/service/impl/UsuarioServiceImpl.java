@@ -2,8 +2,10 @@ package com.server.api.service.impl;
 
 import com.server.api.model.Rol;
 import com.server.api.model.Usuario;
+import com.server.api.model.UsuarioRol;
 import com.server.api.repository.RolRepository;
 import com.server.api.repository.UsuarioRepository;
+import com.server.api.repository.UsuarioRolRepository;
 import com.server.api.service.UsuarioService;
 import com.server.api.exception.ResourceNotFoundException;
 
@@ -27,6 +29,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
     private RolRepository rolRepository;
+
+    @Autowired
+    private UsuarioRolRepository usuarioRolRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -129,47 +134,54 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public UsuarioDTO assignRoles(Long usuarioId, List<Long> roleIds) throws ResourceNotFoundException {
-        // Buscar el usuario por id
+        // Buscar el usuario por ID
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con el ID: " + usuarioId));
 
         // Limpiar los roles actuales del usuario
-        usuario.getRoles().clear();
+        usuarioRolRepository.deleteAllByUsuario(usuario);
 
         // Asignar los nuevos roles
-        List<Rol> roles = roleIds.stream()
-                .map(roleId -> rolRepository.findById(roleId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Rol no encontrado con el ID: " + roleId)))
+        List<UsuarioRol> nuevosRoles = roleIds.stream()
+                .map(roleId -> {
+                    Rol rol = rolRepository.findById(roleId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Rol no encontrado con el ID: " + roleId));
+                    return UsuarioRol.builder().usuario(usuario).rol(rol).build();
+                })
                 .collect(Collectors.toList());
 
-        usuario.getRoles().addAll(roles);
+        // Guardar los nuevos roles asignados
+        usuarioRolRepository.saveAll(nuevosRoles);
 
-        // Guardar el usuario actualizado
-        Usuario updatedUsuario = usuarioRepository.save(usuario);
-
-        // Retornar un UsuarioDTO con la información del usuario actualizado
+        // Crear y devolver el DTO
         return new UsuarioDTO(
-                updatedUsuario.getId(),
-                updatedUsuario.getNombres(),
-                updatedUsuario.getCorreo(),
-                updatedUsuario.getTelefono(),
-                updatedUsuario.getDireccion(),
-                updatedUsuario.getCiudadResidencia() != null ? updatedUsuario.getCiudadResidencia().getId() : null,
-                updatedUsuario.getProfesion() != null ? updatedUsuario.getProfesion().getId() : null,
-                updatedUsuario.getTipoTrabajo() != null ? updatedUsuario.getTipoTrabajo().getId() : null,
-                updatedUsuario.getEstadoCivil() != null ? updatedUsuario.getEstadoCivil().getId() : null,
-                updatedUsuario.getNivelEducativo() != null ? updatedUsuario.getNivelEducativo().getId() : null,
-                updatedUsuario.getHabilitado());
+                usuario.getId(),
+                usuario.getNombres(),
+                usuario.getCorreo(),
+                usuario.getTelefono(),
+                usuario.getDireccion(),
+                usuario.getCiudadResidencia() != null ? usuario.getCiudadResidencia().getId() : null,
+                usuario.getProfesion() != null ? usuario.getProfesion().getId() : null,
+                usuario.getTipoTrabajo() != null ? usuario.getTipoTrabajo().getId() : null,
+                usuario.getEstadoCivil() != null ? usuario.getEstadoCivil().getId() : null,
+                usuario.getNivelEducativo() != null ? usuario.getNivelEducativo().getId() : null,
+                usuario.getHabilitado());
     }
 
     @Override
     public List<UsuarioConRolesDTO> getAllUsuariosWithRoles() {
         List<Usuario> usuarios = usuarioRepository.findAll();
 
-        // Convertir cada Usuario a UsuarioConRolesDTO y mapear los roles
+        // Convertir cada Usuario a UsuarioConRolesDTO y mapear los roles desde
+        // UsuarioRol
         return usuarios.stream().map(usuario -> {
-            List<RolDTO> roles = usuario.getRoles().stream()
-                    .map(rol -> new RolDTO(rol.getId(), rol.getNombre(), rol.getDescripcion(), rol.getHabilitado()))
+            List<UsuarioRol> usuarioRoles = usuarioRolRepository.findByUsuario(usuario);
+
+            List<RolDTO> roles = usuarioRoles.stream()
+                    .map(usuarioRol -> {
+                        Rol rol = usuarioRol.getRol();
+                        return new RolDTO(rol.getId(), rol.getNombre(), rol.getDescripcion(), rol.getHabilitado());
+                    })
                     .collect(Collectors.toList());
 
             return new UsuarioConRolesDTO(

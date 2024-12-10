@@ -44,9 +44,8 @@ public class Rol {
     @JoinColumn(name = "updated_by", foreignKey = @ForeignKey(name = "fk_roles_updated_by"))
     private Usuario updatedBy;
 
-    @ManyToMany
-    @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "rol_id"), inverseJoinColumns = @JoinColumn(name = "usuario_id"))
-    private List<Usuario> usuarios;
+    @OneToMany(mappedBy = "rol", cascade = CascadeType.ALL)
+    private List<UsuarioRol> usuarioRoles;
 
     @OneToMany(mappedBy = "rol", cascade = CascadeType.ALL)
     private List<RolPermiso> rolPermisos;

@@ -44,7 +44,4 @@ public class Sede {
 
     @Column(name = "updated_by", length = 50)
     private String updatedBy;
-
-    @ManyToMany(mappedBy = "sedes")
-    private List<Usuario> usuarios;
 }

@@ -251,14 +251,14 @@ INSERT INTO roles_permisos (rol_id, permiso_id, habilitado) VALUES
 ((SELECT id FROM roles WHERE nombre = 'Administrador'), (SELECT id FROM permisos WHERE nombre = 'Acceso a modulo Usuarios'), TRUE),
 ((SELECT id FROM roles WHERE nombre = 'Administrador'), (SELECT id FROM permisos WHERE nombre = 'Acceso a modulo Permisos a Roles'), TRUE);
 
-INSERT INTO public.usuario_rol (usuario_id,rol_id) VALUES(1, 1);
-INSERT INTO public.usuario_rol (usuario_id,rol_id) VALUES(2, 2);
-INSERT INTO public.usuario_rol (usuario_id,rol_id) VALUES(3, 3);
-INSERT INTO public.usuario_rol (usuario_id,rol_id) VALUES(4, 3);
-INSERT INTO public.usuario_rol (usuario_id,rol_id) VALUES(5, 3);
-INSERT INTO public.usuario_rol (usuario_id,rol_id) VALUES(6, 3);
-INSERT INTO public.usuario_rol (usuario_id,rol_id) VALUES(7, 3);
-INSERT INTO public.usuario_rol (usuario_id,rol_id) VALUES(8, 3);
-INSERT INTO public.usuario_rol (usuario_id,rol_id) VALUES(9, 3);
-INSERT INTO public.usuario_rol (usuario_id,rol_id) VALUES(10, 3);
-INSERT INTO public.usuario_rol (usuario_id,rol_id) VALUES(11, 3);
+INSERT INTO public.usuario_rol (usuario_id, rol_id, created_at, updated_at) VALUES (1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO public.usuario_rol (usuario_id, rol_id, created_at, updated_at) VALUES (2, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO public.usuario_rol (usuario_id, rol_id, created_at, updated_at) VALUES (3, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO public.usuario_rol (usuario_id, rol_id, created_at, updated_at) VALUES (4, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO public.usuario_rol (usuario_id, rol_id, created_at, updated_at) VALUES (5, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO public.usuario_rol (usuario_id, rol_id, created_at, updated_at) VALUES (6, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO public.usuario_rol (usuario_id, rol_id, created_at, updated_at) VALUES (7, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO public.usuario_rol (usuario_id, rol_id, created_at, updated_at) VALUES (8, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO public.usuario_rol (usuario_id, rol_id, created_at, updated_at) VALUES (9, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO public.usuario_rol (usuario_id, rol_id, created_at, updated_at) VALUES (10, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO public.usuario_rol (usuario_id, rol_id, created_at, updated_at) VALUES (11, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
