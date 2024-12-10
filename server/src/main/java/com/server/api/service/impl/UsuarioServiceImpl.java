@@ -63,20 +63,40 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Usuario saveUsuario(Usuario usuario) {
-        // Verificar si el correo ya está registrado
-        if (usuarioRepository.existsByCorreo(usuario.getCorreo())) {
-            throw new IllegalArgumentException("El correo electrónico ya está registrado: " + usuario.getCorreo());
-        }
+        try {
+            // Validar si el correo ya está registrado
+            if (usuarioRepository.existsByCorreo(usuario.getCorreo())) {
+                throw new IllegalArgumentException("El correo electrónico ya está registrado: " + usuario.getCorreo());
+            }
 
-        // Verificar si el numeroIdentificacion ya está registrado
-        if (usuarioRepository.existsByNumeroIdentificacion(usuario.getNumeroIdentificacion())) {
-            throw new IllegalArgumentException(
-                    "El número de identificación ya está registrado: " + usuario.getNumeroIdentificacion());
-        }
+            // Validar si el número de identificación ya está registrado
+            if (usuarioRepository.existsByNumeroIdentificacion(usuario.getNumeroIdentificacion())) {
+                throw new IllegalArgumentException(
+                        "El número de identificación ya está registrado: " + usuario.getNumeroIdentificacion());
+            }
 
-        // Encriptar la contraseña antes de guardar
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-        return usuarioRepository.save(usuario);
+            // Encriptar la contraseña antes de guardar
+            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+
+            // Guardar el usuario base
+            Usuario savedUsuario = usuarioRepository.save(usuario);
+
+            // Asignar el rol por defecto (ID: 8)
+            Rol defaultRol = rolRepository.findById(8L)
+                    .orElseThrow(() -> new IllegalArgumentException("El rol 'Cliente' no existe."));
+
+            UsuarioRol usuarioRol = UsuarioRol.builder()
+                    .usuario(savedUsuario)
+                    .rol(defaultRol)
+                    .build();
+
+            // Guardar la relación usuario-rol
+            usuarioRolRepository.save(usuarioRol);
+
+            return savedUsuario;
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al guardar el usuario: " + ex.getMessage(), ex);
+        }
     }
 
     @Override
