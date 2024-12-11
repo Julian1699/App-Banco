@@ -4,10 +4,12 @@
   align-items: center;
   height: 100vh;
   background-color: #f3f4f6;
+  overflow: auto;
 }
 
 .register-card {
-  width: 800px;
+  width: 90%;
+  max-width: 800px;
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
@@ -33,12 +35,13 @@
 
 .form-grid {
   display: grid;
-  gap: 16px;
+  gap: 20px;
 }
 
 .form-row {
   display: flex;
-  gap: 16px;
+  gap: 20px;
+  justify-content: space-between;
 }
 
 .form-item {
@@ -46,6 +49,18 @@
 }
 
 .submit-button {
+  display: block;
+  margin: 20px auto 0 auto;
   width: 100%;
-  margin-top: 20px;
+  max-width: 300px; /* Limita el ancho del botón */
+}
+.section-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 20px 0 10px;
+  color: #555;
+}
+
+.mat-step-header {
+  justify-content: center;
 }

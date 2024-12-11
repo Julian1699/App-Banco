@@ -10,51 +10,61 @@ import { Router } from '@angular/router';
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent implements OnInit {
-  registerForm: FormGroup;
+  personalFormGroup!: FormGroup; // Información Personal
+  addressFormGroup!: FormGroup; // Dirección
+  additionalFormGroup!: FormGroup; // Información Adicional
   opcionesIdentificacion: any[] = [];
+  opcionesPaises: any[] = [];
+  opcionesDepartamentos: any[] = [];
+  opcionesCiudades: any[] = [];
+  opcionesSedes: any[] = [];
   opcionesProfesion: any[] = [];
   opcionesTipoTrabajo: any[] = [];
   opcionesEstadoCivil: any[] = [];
   opcionesNivelEducativo: any[] = [];
   opcionesGenero: any[] = [];
-  opcionesPaises: any[] = [];
-  opcionesDepartamentos: any[] = [];
-  opcionesCiudades: any[] = [];
-  opcionesSedes: any[] = [];
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router
-  ) {
-    this.registerForm = this.fb.group({
+  ) {}
+  initializeForms() {
+    this.personalFormGroup = this.fb.group({
+      identificacionId: ['', Validators.required],
+      numeroIdentificacion: ['', Validators.required],
       nombres: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
-      numeroIdentificacion: ['', Validators.required],
       telefono: ['', Validators.required],
+    });
+  
+    this.addressFormGroup = this.fb.group({
       direccion: ['', Validators.required],
-      ingresos: ['', Validators.required],
-      egresos: ['', Validators.required],
-      identificacion: ['', Validators.required],
-      profesion: ['', Validators.required],
-      tipoTrabajo: ['', Validators.required],
-      estadoCivil: ['', Validators.required],
-      nivelEducativo: ['', Validators.required],
-      genero: ['', Validators.required],
       pais: ['', Validators.required],
       departamento: ['', Validators.required],
-      ciudadResidencia: ['', Validators.required],
-      sede: ['', Validators.required], // Campo para sedeId
+      ciudadResidenciaId: ['', Validators.required],
     });
-    
+  
+    this.additionalFormGroup = this.fb.group({
+      sedeId: ['', Validators.required],
+      profesionId: ['', Validators.required],
+      tipoTrabajoId: ['', Validators.required],
+      estadoCivilId: ['', Validators.required],
+      nivelEducativoId: ['', Validators.required],
+      generoId: ['', Validators.required],
+      ingresos: ['', [Validators.required, Validators.min(0)]],
+      egresos: ['', [Validators.required, Validators.min(0)]],
+      habilitado: [true]
+    });
   }
 
   ngOnInit(): void {
-    this.cargarValoresIniciales();
+    this.initializeForms();
+    this.loadDropdownData();
   }
 
-  cargarValoresIniciales() {
+  loadDropdownData() {
     this.http.get('http://localhost:8080/api/v1/register/listas/2/valores').subscribe((data: any) => (this.opcionesIdentificacion = data));
     this.http.get('http://localhost:8080/api/v1/register/listas/4/valores').subscribe((data: any) => (this.opcionesProfesion = data));
     this.http.get('http://localhost:8080/api/v1/register/listas/3/valores').subscribe((data: any) => (this.opcionesTipoTrabajo = data));
@@ -83,34 +93,15 @@ export class RegisterComponent implements OnInit {
   }
 
   onRegister() {
-    if (this.registerForm.valid) {
-      const formData = this.registerForm.value;
-  
+    if (this.personalFormGroup.valid && this.addressFormGroup.valid && this.additionalFormGroup.valid) {
       const payload = {
-        nombres: formData.nombres,
-        correo: formData.correo,
-        password: formData.password,
-        numeroIdentificacion: formData.numeroIdentificacion,
-        telefono: formData.telefono,
-        direccion: formData.direccion,
-        ingresos: formData.ingresos,
-        egresos: formData.egresos,
-        identificacionId: formData.identificacion, // Solo el ID
-        profesionId: formData.profesion, // Solo el ID
-        tipoTrabajoId: formData.tipoTrabajo, // Solo el ID
-        estadoCivilId: formData.estadoCivil, // Solo el ID
-        nivelEducativoId: formData.nivelEducativo, // Solo el ID
-        generoId: formData.genero, // Solo el ID
-        ciudadResidenciaId: formData.ciudadResidencia, // Solo el ID
-        habilitado: true,
-        sedeId: formData.sede, // ID de la sede
+        ...this.personalFormGroup.value,
+        ...this.addressFormGroup.value,
+        ...this.additionalFormGroup.value,
       };
-  
-      console.log('Payload:', payload); // Debug
   
       this.http.post('http://localhost:8080/api/v1/usuarios', payload, { responseType: 'text' }).subscribe({
         next: (response) => {
-          console.log('Respuesta del backend:', response);
           Swal.fire({
             icon: 'success',
             title: '¡Registro exitoso!',
@@ -129,7 +120,7 @@ export class RegisterComponent implements OnInit {
             confirmButtonColor: '#FF5733',
           });
         },
-      });      
+      });
     } else {
       Swal.fire({
         icon: 'warning',
@@ -138,6 +129,6 @@ export class RegisterComponent implements OnInit {
         confirmButtonColor: '#FFC107',
       });
     }
-  }
-  
+  } 
+
 }
