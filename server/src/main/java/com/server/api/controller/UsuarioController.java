@@ -3,6 +3,7 @@ package com.server.api.controller;
 import com.server.api.model.Usuario;
 import com.server.api.service.UsuarioService;
 import com.server.api.dto.UsuarioConRolesDTO;
+import com.server.api.dto.UsuarioCreacionDTO;
 import com.server.api.dto.UsuarioDTO;
 import com.server.api.exception.ResourceNotFoundException;
 
@@ -68,9 +69,8 @@ public class UsuarioController {
             @ApiResponse(responseCode = "409", description = "Conflicto: El correo ya está registrado")
     })
     @PostMapping
-    public ResponseEntity<Usuario> createUsuario(@Valid @RequestBody Usuario usuario) {
-        Usuario savedUsuario = usuarioService.saveUsuario(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUsuario);
+    public ResponseEntity<String> createUsuario(@Valid @RequestBody UsuarioCreacionDTO usuarioDTO) {
+        return usuarioService.saveUsuario(usuarioDTO);
     }
 
     // Actualizar un usuario existente
