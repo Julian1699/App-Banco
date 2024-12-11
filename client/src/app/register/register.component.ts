@@ -30,7 +30,7 @@ export class RegisterComponent implements OnInit {
     this.registerForm = this.fb.group({
       nombres: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required]],
       numeroIdentificacion: ['', Validators.required],
       telefono: ['', Validators.required],
       direccion: ['', Validators.required],
@@ -45,8 +45,9 @@ export class RegisterComponent implements OnInit {
       pais: ['', Validators.required],
       departamento: ['', Validators.required],
       ciudadResidencia: ['', Validators.required],
-      sede: ['', Validators.required],
+      sede: ['', Validators.required], // Campo para sedeId
     });
+    
   }
 
   ngOnInit(): void {
@@ -84,7 +85,7 @@ export class RegisterComponent implements OnInit {
   onRegister() {
     if (this.registerForm.valid) {
       const formData = this.registerForm.value;
-
+  
       const payload = {
         nombres: formData.nombres,
         correo: formData.correo,
@@ -94,24 +95,26 @@ export class RegisterComponent implements OnInit {
         direccion: formData.direccion,
         ingresos: formData.ingresos,
         egresos: formData.egresos,
-        identificacion: { id: formData.identificacion },
-        profesion: { id: formData.profesion },
-        tipoTrabajo: { id: formData.tipoTrabajo },
-        estadoCivil: { id: formData.estadoCivil },
-        nivelEducativo: { id: formData.nivelEducativo },
-        genero: { id: formData.genero },
-        ciudadResidencia: { id: formData.ciudadResidencia },
+        identificacionId: formData.identificacion, // Solo el ID
+        profesionId: formData.profesion, // Solo el ID
+        tipoTrabajoId: formData.tipoTrabajo, // Solo el ID
+        estadoCivilId: formData.estadoCivil, // Solo el ID
+        nivelEducativoId: formData.nivelEducativo, // Solo el ID
+        generoId: formData.genero, // Solo el ID
+        ciudadResidenciaId: formData.ciudadResidencia, // Solo el ID
         habilitado: true,
+        sedeId: formData.sede, // ID de la sede
       };
-
+  
       console.log('Payload:', payload); // Debug
-
-      this.http.post('http://localhost:8080/api/v1/usuarios', payload).subscribe({
+  
+      this.http.post('http://localhost:8080/api/v1/usuarios', payload, { responseType: 'text' }).subscribe({
         next: (response) => {
+          console.log('Respuesta del backend:', response);
           Swal.fire({
             icon: 'success',
             title: '¡Registro exitoso!',
-            text: 'El usuario ha sido registrado correctamente.',
+            text: response, // Mostrar el mensaje de texto plano
             confirmButtonColor: '#4CAF50',
           }).then(() => {
             this.router.navigate(['/']); // Redirige al login
@@ -122,13 +125,11 @@ export class RegisterComponent implements OnInit {
           Swal.fire({
             icon: 'error',
             title: 'Error',
-            text:
-              err.error.message ||
-              'Ocurrió un problema al registrar al usuario.',
+            text: err.error.message || 'Ocurrió un problema al registrar al usuario.',
             confirmButtonColor: '#FF5733',
           });
         },
-      });
+      });      
     } else {
       Swal.fire({
         icon: 'warning',
@@ -138,4 +139,5 @@ export class RegisterComponent implements OnInit {
       });
     }
   }
+  
 }

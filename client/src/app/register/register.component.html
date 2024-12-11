@@ -6,149 +6,168 @@
     <mat-card-title class="title">Registro de Usuario</mat-card-title>
     <mat-card-content>
       <form (ngSubmit)="onRegister()" [formGroup]="registerForm">
-        <!-- Nombre Completo -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Nombre Completo</mat-label>
-          <input matInput placeholder="Ingresa tu nombre completo" formControlName="nombres" required />
-        </mat-form-field>
+        <div class="form-grid">
+          <div class="form-row">
+            <!-- Tipo de Identificación -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Tipo de Identificación</mat-label>
+              <mat-select formControlName="identificacion" required>
+                <mat-option *ngFor="let item of opcionesIdentificacion" [value]="item.id">
+                  {{ item.valor }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
-        <!-- Correo Electrónico -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Correo Electrónico</mat-label>
-          <input matInput type="email" placeholder="Ingresa tu correo" formControlName="correo" required />
-        </mat-form-field>
+            <!-- Número de Identificación -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Número de Identificación</mat-label>
+              <input matInput placeholder="Número de identificación" formControlName="numeroIdentificacion" required />
+            </mat-form-field>
+          </div>
 
-        <!-- Contraseña -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Contraseña</mat-label>
-          <input matInput type="password" placeholder="Crea una contraseña" formControlName="password" required />
-        </mat-form-field>
+          <div class="form-row">
+            <!-- Nombre Completo -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Nombre Completo</mat-label>
+              <input matInput placeholder="Ingresa tu nombre completo" formControlName="nombres" required />
+            </mat-form-field>
 
-        <!-- Número de Identificación -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Número de Identificación</mat-label>
-          <input matInput placeholder="Número de identificación" formControlName="numeroIdentificacion" required />
-        </mat-form-field>
+            <!-- Correo Electrónico -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Correo Electrónico</mat-label>
+              <input matInput type="email" placeholder="Ingresa tu correo" formControlName="correo" required />
+            </mat-form-field>
+          </div>
 
-        <!-- Teléfono -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Teléfono</mat-label>
-          <input matInput placeholder="Ingresa tu teléfono" formControlName="telefono" required />
-        </mat-form-field>
+          <div class="form-row">
+            <!-- Contraseña -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Contraseña</mat-label>
+              <input matInput type="password" placeholder="Crea una contraseña" formControlName="password" required />
+            </mat-form-field>
 
-        <!-- Dirección -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Dirección</mat-label>
-          <input matInput placeholder="Ingresa tu dirección" formControlName="direccion" required />
-        </mat-form-field>
+            <!-- Teléfono -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Teléfono</mat-label>
+              <input matInput placeholder="Ingresa tu teléfono" formControlName="telefono" required />
+            </mat-form-field>
+          </div>
 
-        <!-- País -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>País</mat-label>
-          <mat-select formControlName="pais" (selectionChange)="onPaisChange($event.value)" required>
-            <mat-option *ngFor="let item of opcionesPaises" [value]="item.id">{{ item.nombre }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+          <div class="form-row">
+            <!-- Dirección -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Dirección</mat-label>
+              <input matInput placeholder="Ingresa tu dirección" formControlName="direccion" required />
+            </mat-form-field>
 
-        <!-- Departamento -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Departamento</mat-label>
-          <mat-select formControlName="departamento" (selectionChange)="onDepartamentoChange($event.value)" required>
-            <mat-option *ngFor="let item of opcionesDepartamentos" [value]="item.id">{{ item.nombre }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+            <!-- País -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>País</mat-label>
+              <mat-select formControlName="pais" (selectionChange)="onPaisChange($event.value)" required>
+                <mat-option *ngFor="let item of opcionesPaises" [value]="item.id">{{ item.nombre }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
 
-        <!-- Ciudad -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Ciudad</mat-label>
-          <mat-select formControlName="ciudadResidencia" (selectionChange)="onCiudadChange($event.value)" required>
-            <mat-option *ngFor="let item of opcionesCiudades" [value]="item.id">{{ item.nombre }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+          <div class="form-row">
+            <!-- Departamento -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Departamento</mat-label>
+              <mat-select formControlName="departamento" (selectionChange)="onDepartamentoChange($event.value)" required>
+                <mat-option *ngFor="let item of opcionesDepartamentos" [value]="item.id">{{ item.nombre }}</mat-option>
+              </mat-select>
+            </mat-form-field>
 
-        <!-- Tipo de Identificación -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Tipo de Identificación</mat-label>
-          <mat-select formControlName="identificacion" required>
-            <mat-option *ngFor="let item of opcionesIdentificacion" [value]="item.id">
-              {{ item.valor }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            <!-- Ciudad -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Ciudad</mat-label>
+              <mat-select formControlName="ciudadResidencia" (selectionChange)="onCiudadChange($event.value)" required>
+                <mat-option *ngFor="let item of opcionesCiudades" [value]="item.id">{{ item.nombre }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
 
-        <!-- Profesión -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Profesión</mat-label>
-          <mat-select formControlName="profesion" required>
-            <mat-option *ngFor="let item of opcionesProfesion" [value]="item.id">
-              {{ item.valor }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+          <div class="form-row">
+            <!-- Sede -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Sede</mat-label>
+              <mat-select formControlName="sede" required>
+                <mat-option *ngFor="let item of opcionesSedes" [value]="item.id">
+                  {{ item.nombre }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
-        <!-- Tipo de Trabajo -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Tipo de Trabajo</mat-label>
-          <mat-select formControlName="tipoTrabajo" required>
-            <mat-option *ngFor="let item of opcionesTipoTrabajo" [value]="item.id">
-              {{ item.valor }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            <!-- Profesión -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Profesión</mat-label>
+              <mat-select formControlName="profesion" required>
+                <mat-option *ngFor="let item of opcionesProfesion" [value]="item.id">
+                  {{ item.valor }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
 
-        <!-- Estado Civil -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Estado Civil</mat-label>
-          <mat-select formControlName="estadoCivil" required>
-            <mat-option *ngFor="let item of opcionesEstadoCivil" [value]="item.id">
-              {{ item.valor }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+          <div class="form-row">
+            <!-- Tipo de Trabajo -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Tipo de Trabajo</mat-label>
+              <mat-select formControlName="tipoTrabajo" required>
+                <mat-option *ngFor="let item of opcionesTipoTrabajo" [value]="item.id">
+                  {{ item.valor }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
-        <!-- Nivel Educativo -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Nivel Educativo</mat-label>
-          <mat-select formControlName="nivelEducativo" required>
-            <mat-option *ngFor="let item of opcionesNivelEducativo" [value]="item.id">
-              {{ item.valor }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            <!-- Estado Civil -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Estado Civil</mat-label>
+              <mat-select formControlName="estadoCivil" required>
+                <mat-option *ngFor="let item of opcionesEstadoCivil" [value]="item.id">
+                  {{ item.valor }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
 
-        <!-- Género -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Género</mat-label>
-          <mat-select formControlName="genero" required>
-            <mat-option *ngFor="let item of opcionesGenero" [value]="item.id">
-              {{ item.valor }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+          <div class="form-row">
+            <!-- Nivel Educativo -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Nivel Educativo</mat-label>
+              <mat-select formControlName="nivelEducativo" required>
+                <mat-option *ngFor="let item of opcionesNivelEducativo" [value]="item.id">
+                  {{ item.valor }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
-        <!-- Sede -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Sede</mat-label>
-          <mat-select formControlName="sede" required>
-            <mat-option *ngFor="let item of opcionesSedes" [value]="item.id">
-              {{ item.nombre }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            <!-- Género -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Género</mat-label>
+              <mat-select formControlName="genero" required>
+                <mat-option *ngFor="let item of opcionesGenero" [value]="item.id">
+                  {{ item.valor }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
 
-        <!-- Ingresos -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Ingresos</mat-label>
-          <input matInput type="number" placeholder="Ingresos mensuales" formControlName="ingresos" required />
-        </mat-form-field>
+          <div class="form-row">
+            <!-- Ingresos -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Ingresos</mat-label>
+              <input matInput type="number" placeholder="Ingresos mensuales" formControlName="ingresos" required />
+            </mat-form-field>
 
-        <!-- Egresos -->
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Egresos</mat-label>
-          <input matInput type="number" placeholder="Egresos mensuales" formControlName="egresos" required />
-        </mat-form-field>
-
-        <button mat-raised-button color="primary" class="full-width" type="submit">Registrar</button>
+            <!-- Egresos -->
+            <mat-form-field appearance="fill" class="form-item">
+              <mat-label>Egresos</mat-label>
+              <input matInput type="number" placeholder="Egresos mensuales" formControlName="egresos" required />
+            </mat-form-field>
+          </div>
+        </div>
+        <button mat-raised-button color="primary" class="submit-button" type="submit">Registrar</button>
       </form>
     </mat-card-content>
   </mat-card>
