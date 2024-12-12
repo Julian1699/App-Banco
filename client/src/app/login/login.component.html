@@ -1,28 +1,31 @@
 <div class="login-container">
-    <mat-card class="login-card">
-      <div class="icon-container">
-        <img src="assets/ulibre.png" alt="Logo" class="login-logo" />
+  <mat-card class="login-card">
+    <div class="icon-container">
+      <img src="assets/ulibre.png" alt="Logo" class="login-logo" />
+    </div>
+    <mat-card-title class="title">Inicia Sesión</mat-card-title>
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()" class="login-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Correo Electrónico</mat-label>
+          <input matInput type="email" placeholder="Ingresa tu correo" [(ngModel)]="email" name="email" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contraseña</mat-label>
+          <input matInput type="password" placeholder="Ingresa tu contraseña" [(ngModel)]="password" name="password"
+            required />
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" class="full-width">Iniciar Sesión</button>
+      </form>
+      <div class="options-container">
+        <a routerLink="/forgot-password" class="link">¿Olvidaste tu contraseña?</a>
       </div>
-      <mat-card-title class="title">Bienvenido</mat-card-title>
-      <mat-card-content>
-        <form (ngSubmit)="onSubmit()">
-          <mat-form-field appearance="fill" class="full-width">
-            <mat-label>Correo Electrónico</mat-label>
-            <input matInput type="email" placeholder="Ingresa tu correo" [(ngModel)]="email" name="email" required />
-          </mat-form-field>
-  
-          <mat-form-field appearance="fill" class="full-width">
-            <mat-label>Contraseña</mat-label>
-            <input matInput type="password" placeholder="Ingresa tu contraseña" [(ngModel)]="password" name="password" required />
-          </mat-form-field>
-  
-          <button mat-raised-button color="primary" class="full-width">Iniciar Sesión</button>
-        </form>
-        <div class="options-container">
-          <a routerLink="/forgot-password">¿Olvidaste tu contraseña?</a>
-          <a routerLink="/register">¿No tienes cuenta? Regístrate aquí</a>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-  
+      <div class="register-container">
+        <span>¿No tienes cuenta?</span>
+        <a routerLink="/register" class="register-link">Regístrate aquí</a>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
