@@ -71,11 +71,17 @@ public class UsuarioServiceImpl implements UsuarioService {
                                                 usuario.getCorreo(),
                                                 usuario.getTelefono(),
                                                 usuario.getDireccion(),
-                        usuario.getCiudadResidencia() != null ? usuario.getCiudadResidencia().getId() : null,
+                                                usuario.getCiudadResidencia() != null
+                                                                ? usuario.getCiudadResidencia().getId()
+                                                                : null,
                                                 usuario.getProfesion() != null ? usuario.getProfesion().getId() : null,
-                        usuario.getTipoTrabajo() != null ? usuario.getTipoTrabajo().getId() : null,
-                        usuario.getEstadoCivil() != null ? usuario.getEstadoCivil().getId() : null,
-                        usuario.getNivelEducativo() != null ? usuario.getNivelEducativo().getId() : null,
+                                                usuario.getTipoTrabajo() != null ? usuario.getTipoTrabajo().getId()
+                                                                : null,
+                                                usuario.getEstadoCivil() != null ? usuario.getEstadoCivil().getId()
+                                                                : null,
+                                                usuario.getNivelEducativo() != null
+                                                                ? usuario.getNivelEducativo().getId()
+                                                                : null,
                                                 usuario.getHabilitado()))
                                 .collect(Collectors.toList());
         }
@@ -90,6 +96,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         @Transactional
         public ResponseEntity<String> saveUsuario(UsuarioCreacionDTO usuarioDTO) {
                 try {
+                        // Validar el formato del correo
+                        String emailPattern = "^[^ ]+@[^ ]+\\.[a-z]{2,3}$";
+                        if (!usuarioDTO.getCorreo().matches(emailPattern)) {
+                                throw new IllegalArgumentException("El correo electrónico tiene un formato inválido: "
+                                                + usuarioDTO.getCorreo());
+                        }
+
                         // Validar si el correo ya está registrado
                         if (usuarioRepository.existsByCorreo(usuarioDTO.getCorreo())) {
                                 throw new IllegalArgumentException(
@@ -208,7 +221,8 @@ public class UsuarioServiceImpl implements UsuarioService {
                 if (!usuario.getCorreo().equals(usuarioDetails.getCorreo())) {
                         if (usuarioRepository.existsByCorreo(usuarioDetails.getCorreo())) {
                                 throw new IllegalArgumentException(
-                        "El correo electrónico ya está registrado: " + usuarioDetails.getCorreo());
+                                                "El correo electrónico ya está registrado: "
+                                                                + usuarioDetails.getCorreo());
                         }
                         usuario.setCorreo(usuarioDetails.getCorreo());
                 }
@@ -218,7 +232,8 @@ public class UsuarioServiceImpl implements UsuarioService {
                 if (!usuario.getNumeroIdentificacion().equals(usuarioDetails.getNumeroIdentificacion())) {
                         if (usuarioRepository.existsByNumeroIdentificacion(usuarioDetails.getNumeroIdentificacion())) {
                                 throw new IllegalArgumentException(
-                        "El número de identificación ya está registrado: " + usuarioDetails.getNumeroIdentificacion());
+                                                "El número de identificación ya está registrado: "
+                                                                + usuarioDetails.getNumeroIdentificacion());
                         }
                         usuario.setNumeroIdentificacion(usuarioDetails.getNumeroIdentificacion());
                 }
@@ -256,7 +271,8 @@ public class UsuarioServiceImpl implements UsuarioService {
         public UsuarioDTO assignRoles(Long usuarioId, List<Long> roleIds) throws ResourceNotFoundException {
                 // Buscar el usuario por ID
                 Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con el ID: " + usuarioId));
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Usuario no encontrado con el ID: " + usuarioId));
 
                 // Limpiar los roles actuales del usuario
                 usuarioRolRepository.deleteAllByUsuario(usuario);
@@ -265,7 +281,8 @@ public class UsuarioServiceImpl implements UsuarioService {
                 List<UsuarioRol> nuevosRoles = roleIds.stream()
                                 .map(roleId -> {
                                         Rol rol = rolRepository.findById(roleId)
-                            .orElseThrow(() -> new ResourceNotFoundException("Rol no encontrado con el ID: " + roleId));
+                                                        .orElseThrow(() -> new ResourceNotFoundException(
+                                                                        "Rol no encontrado con el ID: " + roleId));
                                         return UsuarioRol.builder().usuario(usuario).rol(rol).build();
                                 })
                                 .collect(Collectors.toList());
@@ -300,7 +317,8 @@ public class UsuarioServiceImpl implements UsuarioService {
                         List<RolDTO> roles = usuarioRoles.stream()
                                         .map(usuarioRol -> {
                                                 Rol rol = usuarioRol.getRol();
-                        return new RolDTO(rol.getId(), rol.getNombre(), rol.getDescripcion(), rol.getHabilitado());
+                                                return new RolDTO(rol.getId(), rol.getNombre(), rol.getDescripcion(),
+                                                                rol.getHabilitado());
                                         })
                                         .collect(Collectors.toList());
 
@@ -308,7 +326,8 @@ public class UsuarioServiceImpl implements UsuarioService {
                                         usuario.getId(),
                                         usuario.getNombres(),
                                         usuario.getCorreo(),
-                    usuario.getCiudadResidencia() != null ? usuario.getCiudadResidencia().getId() : null,
+                                        usuario.getCiudadResidencia() != null ? usuario.getCiudadResidencia().getId()
+                                                        : null,
                                         usuario.getHabilitado(),
                                         roles);
                 }).collect(Collectors.toList());
