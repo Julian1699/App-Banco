@@ -1,0 +1,20 @@
+<mat-sidenav-container class="sidenav-container">
+  <!-- Sidebar -->
+  <mat-sidenav #sidenav mode="side" [(opened)]="isExpanded" class="sidenav">
+    <mat-nav-list>
+      <a mat-list-item routerLink="/home" routerLinkActive="active">
+        <mat-icon>home</mat-icon>
+        <span *ngIf="isExpanded">Inicio</span>
+      </a>
+      <a mat-list-item routerLink="/some-other-route" routerLinkActive="active">
+        <mat-icon>settings</mat-icon>
+        <span *ngIf="isExpanded">Otras Opciones</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <!-- Contenido Principal -->
+  <mat-sidenav-content>
+    <ng-content></ng-content>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -17,13 +17,23 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { LayoutComponent } from './layout/layout.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
-    RegisterComponent
+    RegisterComponent,
+    SidebarComponent,
+    LayoutComponent,
+    NavbarComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +48,9 @@ import { RegisterComponent } from './register/register.component';
     MatIconModule, // Iconos de Material Design
     MatCardModule, // Tarjetas para diseño visual
     MatSelectModule,
-    MatStepperModule
+    MatStepperModule,
+    MatSidenavModule, // Sidenav para la barra lateral
+    MatListModule    // Listas dentro del sidenav
   ],
   providers: [],
   bootstrap: [AppComponent]
